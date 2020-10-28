@@ -1,0 +1,10 @@
+languageCode = "en-us"
+title = "Functional Patterns in Java"
+publishDir = "docs"
+theme = "book"
+enableGitInfo = true
+disableKinds = ['taxonomy', 'taxonomyTerm']
+
+[params]
+  BookSearch = false
+  BookComments = false
