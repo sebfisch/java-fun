@@ -1,5 +1,5 @@
 languageCode = "en-us"
-title = "Functional Patterns in Java"
+title = "Java Fun"
 publishDir = "docs"
 theme = "book"
 enableGitInfo = true
