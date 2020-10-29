@@ -161,7 +161,7 @@ takes a stream as argument and returns it as result.
 
 ## Task: Reasoning
 
-Think about useful properties that can be used to manipulate
+Think about useful properties that can be used to manipulate or reason about
 expressions involving the presented combinators
 and write more tests to check these properties.
 Can you express some of the presented combinators using others
