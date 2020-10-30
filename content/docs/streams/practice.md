@@ -308,3 +308,5 @@ Our discussion shows that, in Java, this wrapping-and-flattening operation is no
 regarding resource consumtion
 which is another indication that the integration of functional programming patterns
 into conventional languages is not always seamless.
+
+## Task: Avoid reopening files
