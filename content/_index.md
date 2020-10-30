@@ -7,7 +7,8 @@ title: "Functional Patterns in Java"
 > Conventional programming languages are growing *ever more enormous, but not stronger*.
 
 In his Turing-Award lecture in 1978,
-[John Backus](https://en.wikipedia.org/wiki/John_Backus) asked:
+[John Backus](https://en.wikipedia.org/wiki/John_Backus)
+asked:
 [Can programming be liberated from the von Neumann style?](https://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf)
 He gave a damning report on the state of conventional programming languages at the time.
 
