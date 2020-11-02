@@ -310,3 +310,9 @@ which is another indication that the integration of functional programming patte
 into conventional languages is not always seamless.
 
 ## Task: Avoid reopening files
+
+The presented implementation opens some file twice.
+Modify the stream pipeline in such a way that
+no files are opened more than once
+and only matching lines are held in memory.
+
