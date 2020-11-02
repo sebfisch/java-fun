@@ -11,7 +11,7 @@ Implementing source file search #  Our application will search through files in 
 Implementing source file search #  Our application will search through files in a given folder and print all lines containing a match for a given regular expression. We will only search in Java source files in the given folder. When searching for lines matching the regular expression /public static[^=]*\(/ in our own src folder, our application might produce output like this." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/streams/practice/" />
-<meta property="article:modified_time" content="2020-11-02T09:28:33+01:00" />
+<meta property="article:modified_time" content="2020-11-02T12:39:11+01:00" />
 <title>Streams in Practice | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -429,6 +429,10 @@ into conventional languages is not always seamless.</p>
   Task: Avoid reopening files
   <a class="anchor" href="#task-avoid-reopening-files">#</a>
 </h2>
+<p>The presented implementation opens some file twice.
+Modify the stream pipeline in such a way that
+no files are opened more than once
+and only matching lines are held in memory.</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
