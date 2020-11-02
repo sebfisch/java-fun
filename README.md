@@ -3,7 +3,8 @@
 This repository contains the sources for the Tutorial:
 [Functional Patterns in Java](https://sebfisch.github.io/java-fun/).
 
-It references a docker container that can be used to
+It references a [docker container](https://github.com/sebfisch/docker-wiki-dev)
+that can be used to
 write and generate the corresponding site.
 You can start the development using
 
