@@ -270,7 +270,7 @@ The API documentation for `Files.lines` includes the following note.
 In this case, using a try-with-resources statement in the definition of `getLines`
 would not have the desired effect
 because the stream is returned from the function and consumed outside of it.
-Instead we need to make sure that the stream returned by `getLines` is closed
+Instead we make sure that the stream returned by `getLines` is closed
 whenever we call `getLines`.
 
 The first call to `getLines` in the argument to `filter` is problematic.
