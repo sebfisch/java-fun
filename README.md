@@ -6,7 +6,7 @@ This repository contains the sources for the Tutorial:
 It references a [docker container](https://github.com/sebfisch/docker-wiki-dev)
 that can be used to
 write and generate the corresponding site.
-You can start the development using
+You can start the development environment using
 
     # docker-compose run --rm --service-ports dev
 
