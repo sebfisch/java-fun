@@ -10,6 +10,10 @@ You can start the development environment using
 
     # docker-compose run --rm --service-ports dev
 
+On first use you should clone submodules as follows.
+
+    # git submodule init && git submodule update
+
 Inside the container, you can start the development server using
 
     # hugo server --bind 0.0.0.0
