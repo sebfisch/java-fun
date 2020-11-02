@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Combinators in Isolation #  In Java, streams are instances of the generic type Stream&lt;T&gt; which has a type parameter T for the type of stream elements.
+The map combinator #  The map combinator has the following signature1.
+&lt;R&gt; Stream&lt;R&gt; map(Function&lt;T,R&gt; function); It expects a Function as argument, which is itself a generic type with type parameters for the argument and result types. The argument type of the passed function needs to match the element type of the original stream.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Combinators in Isolation" />
+<meta property="og:description" content="Combinators in Isolation #  In Java, streams are instances of the generic type Stream&lt;T&gt; which has a type parameter T for the type of stream elements.
+The map combinator #  The map combinator has the following signature1.
+&lt;R&gt; Stream&lt;R&gt; map(Function&lt;T,R&gt; function); It expects a Function as argument, which is itself a generic type with type parameters for the argument and result types. The argument type of the passed function needs to match the element type of the original stream." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/streams/tests/" />
+<meta property="article:modified_time" content="2020-10-29T14:56:19+01:00" />
+<title>Combinators in Isolation | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class=" active">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Combinators in Isolation</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-map-combinator">The <code>map</code> combinator</a></li>
+    <li><a href="#the-filter-combinator">The <code>filter</code> combinator</a></li>
+    <li><a href="#the-flatmap-combinator">The <code>flatMap</code> combinator</a></li>
+    <li><a href="#task-reasoning">Task: Reasoning</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="combinators-in-isolation">
+  Combinators in Isolation
+  <a class="anchor" href="#combinators-in-isolation">#</a>
+</h1>
+<p>In Java, streams are instances of the
+<a href="https://docs.oracle.com/javase/tutorial/java/generics/types.html">generic type</a>
+<code>Stream&lt;T&gt;</code>
+which has a type parameter <code>T</code> for the type of stream elements.</p>
+<h2 id="the-map-combinator">
+  The <code>map</code> combinator
+  <a class="anchor" href="#the-map-combinator">#</a>
+</h2>
+<p>The <code>map</code> combinator has the following signature<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>R<span style="color:#f92672">&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>It expects a
+<a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/Function.html">Function</a>
+as argument, which is itself a generic type with type parameters
+for the argument and result types.
+The argument type of the passed function needs to match the element type of the original stream.
+The element type of the returned stream matches the result type of the passed function.
+The following test asserts that <code>map</code> applies the given function to each element
+of the stream it is called on and returns a new stream containing the results.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatMapAppliesGivenFunctionToEachElement</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> words <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Streams&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> words<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">());</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>5<span style="color:#f92672">,</span> 7<span style="color:#f92672">),</span> result<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The static method <code>Stream.of</code> can be used to create a stream from given elements.
+In this test we create a stream of strings and use <code>map</code> with a function
+that computes the length of strings.
+The lambda expression used as argument of <code>map</code> is equivalent to the following
+instance of an anonymous class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">new</span> Function<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span>Integer<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>String w<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The <code>apply</code> method is applied to each string in the stream <code>words</code>
+and all results are collected in the new stream <code>result</code>.</p>
+<p>Note that we do not see
+in which order a given functions is applied to the elements of a stream by <code>map</code>.
+In fact it might be applied in parallel depending on how the stream was created.
+All we can see is that the function is applied to each element uniformly
+rather than one element at a time.</p>
+<h2 id="the-filter-combinator">
+  The <code>filter</code> combinator
+  <a class="anchor" href="#the-filter-combinator">#</a>
+</h2>
+<p>The <code>filter</code> combinator has the following signature.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Stream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Predicate<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> predicate<span style="color:#f92672">);</span>
+</code></pre></div><p>It expects a
+<a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/Predicate.html">Predicate</a>
+as argument, which is a generic type for functions that return a <code>boolean</code> result.
+The argument type of the passed predicate needs to match the element type
+of the original stream
+which is also the element type of the returned stream.
+The following test asserts that <code>filter</code> applies the given predicate to each element
+of the stream it is called on and returns a new stream containing only those elements
+which are accepted by the predicate, removing the others.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFilterRemovesNonMatchingElements</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> words <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Streams&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> words<span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 6<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Streams&#34;</span><span style="color:#f92672">),</span> result<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The lambda expression used as argument of <code>filter</code> is equivalent to the following
+instance of an anonymous class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">new</span> Predicate<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">(</span>String w<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 6<span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The <code>test</code> method is applied to each string in the stream <code>words</code>
+and those strings where <code>test</code> returns <code>true</code> are collected in the new stream <code>result</code>.</p>
+<p>The given predicate is applied uniformly to the elements of a stream by <code>filter</code>,
+not necessarily one at a time, and possibly in parallel.</p>
+<h2 id="the-flatmap-combinator">
+  The <code>flatMap</code> combinator
+  <a class="anchor" href="#the-flatmap-combinator">#</a>
+</h2>
+<p>The <code>flatMap</code> combinator has the following signature.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>It expects a function as argument where the argument type needs to match
+the element type of the original stream.
+The result type of the function passed as argument to <code>flatMap</code>
+needs to be a stream itself, and the corresponding element type
+matches the element type of the returned stream.
+The following test asserts that <code>flatMap</code> applies the given function to each element
+of the stream it is called on and returns a new stream combining all elements of streams
+returned by the given function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapCombinesStreamResults</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> words <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Streams&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> words<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">chars</span><span style="color:#f92672">().</span><span style="color:#a6e22e">boxed</span><span style="color:#f92672">());</span>
+  assertEquals<span style="color:#f92672">(</span>12<span style="color:#f92672">,</span> result<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The lambda expression used as argument of <code>flatMap</code> is, again, equivalent to
+an instance of an anonymous class.
+The method <code>chars</code> on strings returns an <code>IntStream</code>
+which is a stream where the elements are primitive <code>int</code> values
+(one for each character of the string.)
+We use the <code>boxed</code> method to convert the <code>IntStream</code>
+into a stream of type <code>Stream&lt;Integer&gt;</code>
+to match the result type of the argument passed to <code>flatMap</code>.
+This time we use the <em>terminal operation</em> <code>count</code> on the stream <code>result</code>
+to collect all 12 elements into a single number.</p>
+<p>The <code>flatMap</code> combinator can be used to flatten a nested string
+as the following test demonstrates.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapWithIdentityFunctionFlattensNestedStreams</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;&gt;</span> nested <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>2<span style="color:#f92672">),</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>3<span style="color:#f92672">,</span>4<span style="color:#f92672">));</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> flat <span style="color:#f92672">=</span> nested<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>s <span style="color:#f92672">-&gt;</span> s<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>2<span style="color:#f92672">,</span> 3<span style="color:#f92672">,</span> 4<span style="color:#f92672">),</span> flat<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The lambda expression passed as argument is a function that
+takes a stream as argument and returns it as result.</p>
+<h2 id="task-reasoning">
+  Task: Reasoning
+  <a class="anchor" href="#task-reasoning">#</a>
+</h2>
+<p>Think about useful properties that can be used to manipulate or reason about
+expressions involving the presented combinators
+and write more tests to check these properties.
+Can you express some of the presented combinators using others
+in a way that would allow arbitrary applications of one combinator
+to be replaced by a corresponding application of another?</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Real signatures might be more general than what is shown here because we specialize
+<a href="https://docs.oracle.com/javase/tutorial/java/generics/bounded.html">bounded type parameters</a>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-map-combinator">The <code>map</code> combinator</a></li>
+    <li><a href="#the-filter-combinator">The <code>filter</code> combinator</a></li>
+    <li><a href="#the-flatmap-combinator">The <code>flatMap</code> combinator</a></li>
+    <li><a href="#task-reasoning">Task: Reasoning</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

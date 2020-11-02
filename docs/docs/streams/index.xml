@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Streams on Java Fun</title>
+    <link>http://sebfisch.github.io/java-fun/docs/streams/</link>
+    <description>Recent content in Streams on Java Fun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="http://sebfisch.github.io/java-fun/docs/streams/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Combinators in Isolation</title>
+      <link>http://sebfisch.github.io/java-fun/docs/streams/tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/streams/tests/</guid>
+      <description>Combinators in Isolation #  In Java, streams are instances of the generic type Stream&amp;lt;T&amp;gt; which has a type parameter T for the type of stream elements.
+The map combinator #  The map combinator has the following signature1.
+&amp;lt;R&amp;gt; Stream&amp;lt;R&amp;gt; map(Function&amp;lt;T,R&amp;gt; function); It expects a Function as argument, which is itself a generic type with type parameters for the argument and result types. The argument type of the passed function needs to match the element type of the original stream.</description>
+    </item>
+    
+    <item>
+      <title>Streams in Practice</title>
+      <link>http://sebfisch.github.io/java-fun/docs/streams/practice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/streams/practice/</guid>
+      <description>Streams in Practice #  We now discuss a small command line application demonstrating how streams help solving problems in practice.
+Implementing source file search #  Our application will search through files in a given folder and print all lines containing a match for a given regular expression. We will only search in Java source files in the given folder. When searching for lines matching the regular expression /public static[^=]*\(/ in our own src folder, our application might produce output like this.</description>
+    </item>
+    
+  </channel>
+</rss>

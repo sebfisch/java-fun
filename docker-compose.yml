@@ -4,7 +4,7 @@ volumes:
 services:
   dev:
     build:
-      context: "/Users/sebf/Code/docker-wiki-dev"
+      context: "https://github.com/sebfisch/docker-wiki-dev.git#latest"
       # Adjust the build args to reflect your local setup
       # args:
         # HOME: /home/me

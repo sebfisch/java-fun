@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+	<meta name="generator" content="Hugo 0.77.0" />
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Functional Patterns in Java #   Conventional programming languages are growing ever more enormous, but not stronger.
+ In his Turing-Award lecture in 1978, John Backus asked: Can programming be liberated from the von Neumann style? He gave a damning report on the state of conventional programming languages at the time.
+ Inherent defects at the most basic level cause them to be both fat and weak: their primitive word-at-a-time style of programming inherited from their common ancestor—the von Neumann computer, their close coupling of semantics to state transitions, their division of programming into a world of expressions and a world of statements, their inability to effectively use powerful combining forms for building new programs from existing ones, and their lack of useful mathematical properties for reasoning about programs.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Functional Patterns in Java" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/" />
+
+<title>Functional Patterns in Java | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><link rel="alternate" type="application/rss+xml" href="http://sebfisch.github.io/java-fun/index.xml" title="Java Fun" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Functional Patterns in Java</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents"></nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="functional-patterns-in-java">
+  Functional Patterns in Java
+  <a class="anchor" href="#functional-patterns-in-java">#</a>
+</h1>
+<blockquote>
+<p>Conventional programming languages are growing <em>ever more enormous, but not stronger</em>.</p>
+</blockquote>
+<p>In his Turing-Award lecture in 1978,
+<a href="https://en.wikipedia.org/wiki/John_Backus">John Backus</a>
+asked:
+<a href="https://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf">Can programming be liberated from the von Neumann style?</a>
+He gave a damning report on the state of conventional programming languages at the time.</p>
+<blockquote>
+<p><em>Inherent defects</em> at the most basic level cause them to be both <em>fat and weak</em>:
+their primitive word-at-a-time style of programming
+inherited from their common ancestor—the von Neumann computer,
+their close coupling of semantics to state transitions,
+their division of programming into a world of expressions and a world of statements,
+their inability to effectively use powerful combining forms
+for building new programs from existing ones,
+and their lack of useful mathematical properties for reasoning about programs.</p>
+</blockquote>
+<p>This assessment is decades old.
+The functional programming language
+<a href="https://en.wikipedia.org/wiki/Lisp_%28programming_language%29">Lisp</a>
+is two decades older but was not conventional at the time, and still isn&rsquo;t today.
+Functional programming languages focus on <em>expressions rather than statements</em>,
+which enables them to provide <em>powerful combining forms</em> for programs
+with <em>useful properties for reasoning</em>.
+As a result, conventional programming languages are incorporating patterns
+from functional programming.
+Java is no exception.</p>
+<p>The word <strong>pattern</strong> is used here in the sense of <em>design pattern</em>
+(and not as in pattern matching.)
+In functional programming, design patterns often take the form of so called
+higher-order functions, which are functions that take other functions as arguments
+or return other functions as results.
+In modern Java, functions can be represented using
+<a href="https://docs.oracle.com/javase/specs/jls/se14/html/jls-9.html#jls-9.8">functional interfaces</a>
+and corresponding instances can be written concisely using
+<a href="https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">lambda expressions</a>
+or
+<a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html">method references</a>.
+Representing functions as values (or objects in Java) allows them to be used in expressions
+without executing them right away as in statements including procedure (or method) calls.
+In expressions, functions can be more flexibly combined
+for building new programs from existing ones.
+Algebraic properties, similar to primary school arithmetic,
+can be used to manipulate combined expressions, including those containing functions.</p>
+<p>In this tutorial, we will look at combining forms, or <em>combinators</em>,
+that are particularly prevalent: <code>map</code>, <code>filter</code>, and <code>flatMap</code>.
+All of them are provided for different types by Java&rsquo;s standard library.
+We will discuss how to use them for two of those types and then
+implement our own types providing these combinators.</p>
+<p>The underlying source code is available online,
+and this tutorial includes tasks to extend it.
+If you want to follow along, you can use your own Java development environment
+or install
+<a href="https://docs.docker.com/get-docker/">Docker</a>
+and
+<a href="https://code.visualstudio.com/download">VS Code</a>
+with the
+<a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Development Extension Pack</a>
+to use a predefined environment without creating (or adjusting) your own.
+To use the predefined environment in VS Code
+click on the Remote Containers icon in the bottom-left corner,
+select <em>Clone Repository in Container Volume</em>,
+and provide the URL of the accompanying source code repository.
+Alternatively, you can use <code>git</code> to clone the repository,
+open the corresponding folder in VS Code,
+and then select <em>Reopen Folder in Container</em>.</p>
+<p>The most eye-catching use of functional programming patterns in Java is probably with
+<a href="docs/streams/">streams</a>, so let&rsquo;s start with them.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents"></nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

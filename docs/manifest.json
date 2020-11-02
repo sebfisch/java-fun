@@ -1,0 +1,15 @@
+{
+  "name": "Java Fun",
+  "short_name": "Java Fun",
+  "start_url": "/java-fun/",
+  "scope": "/java-fun/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/java-fun/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}

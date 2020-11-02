@@ -1,3 +1,4 @@
+baseURL = "http://sebfisch.github.io/java-fun"
 languageCode = "en-us"
 title = "Java Fun"
 publishDir = "docs"
