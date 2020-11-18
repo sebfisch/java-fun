@@ -57,7 +57,7 @@ The `apply` method is applied to each string in the stream `words`
 and all results are collected in the new stream `result`.
 
 Note that we do not see 
-in which order a given functions is applied to the elements of a stream by `map`.
+in which order a given function is applied to the elements of a stream by `map`.
 In fact it might be applied in parallel depending on how the stream was created.
 All we can see is that the function is applied to each element uniformly
 rather than one element at a time.
@@ -133,8 +133,8 @@ void testThatFlatMapCombinesStreamResults() {
 }
 ```
 
-The lambda expression used as argument of `flatMap` is, again, equivalent to
-an instance of an anonymous class.
+The lambda expression used as argument of `flatMap` is equivalent to
+an instance of an anonymous class implementing `Function<String,Stream<Integer>>`.
 The method `chars` on strings returns an `IntStream`
 which is a stream where the elements are primitive `int` values
 (one for each character of the string.)
@@ -144,7 +144,7 @@ to match the result type of the argument passed to `flatMap`.
 This time we use the *terminal operation* `count` on the stream `result`
 to collect all 12 elements into a single number.
 
-The `flatMap` combinator can be used to flatten a nested string
+The `flatMap` combinator can be used to flatten a nested stream
 as the following test demonstrates.
 
 ```java

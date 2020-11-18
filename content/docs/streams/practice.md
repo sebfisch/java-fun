@@ -96,7 +96,7 @@ We managed to write our application using a stream pipeline,
 but as it stands it prints only matching lines and no file names.
 We can extend the pipeline to print file names as follows.
 
-```java
+```java {lineos=table,hl_lines=[2]}
 javaFiles //
     .peek(System.out::println); // ONLY THIS LINE IS NEW
     .flatMap(SrcFileSearch::getLines) //
@@ -122,7 +122,7 @@ matching lines from the corresponding file.
 As it stands, our application prints the name of every searched file.
 We can extend it as follows to print only files that include at least one matching line.
 
-```java
+```java {lineos=table,hl_lines=[2]}
 javaFiles //
     .filter(file -> getLines(file).anyMatch(containsMatch)) // ADDED THIS LINE
     .peek(System.out::println); //
@@ -141,7 +141,7 @@ As it stands, our application prints file names relative to the `src` folder
 used as search root.
 We can extend it as follows to print absolute file names instead.
 
-```java
+```java {lineos=table,hl_lines=[2]}
 javaFiles //
     .map(Path::toAbsolutePath) // THE ONLY NEW LINE
     .filter(file -> getLines(file).anyMatch(containsMatch)) //
@@ -175,7 +175,7 @@ The pipeline starts with a stream of file names returned by the method `getJavaF
 defined above.
 That mathod can throw an `IOException` which we handle in our `main` method.
 
-```java
+```java {lineos=table,hl_lines=[1,"9-11"]}
 try (final Stream<Path> javaFiles = getJavaFiles(srcPath)) {
   javaFiles //
       .map(Path::toAbsolutePath) //
@@ -235,7 +235,7 @@ passed to stream combinators.
 To make sure we actually handle the wrapped exception,
 we need to add a `catch` clause for `UncheckedIOException` in our `main` method.
 
-```java
+```java {lineos=table,hl_lines=["11-13"]}
 try (final Stream<Path> javaFiles = getJavaFiles(srcPath)) {
   javaFiles //
       .map(Path::toAbsolutePath) //
@@ -271,7 +271,7 @@ In this case, using a try-with-resources statement in the definition of `getLine
 would not have the desired effect
 because the stream is returned from the function and consumed outside of it.
 Instead we make sure that the stream returned by `getLines` is closed
-whenever we call `getLines`.
+in a different way.
 
 The first call to `getLines` in the argument to `filter` is problematic.
 In general, terminal operations do not close the streams they consume,
@@ -288,16 +288,19 @@ by the second use of `getLines`.
 We can change the definition of `getLines` as follows to make sure
 files are always closed after consuming the returned stream.
 
-```java
+```java {lineos=table,hl_lines=[3]}
 private static Stream<String> getLines(final Path file) {
   try {
-    return Stream.of(Files.lines(file)).flatMap(s -> s);
+    return Stream.of(Files.lines(file)).flatMap(s -> s); // CHANGED
   } catch (IOException e) {
     throw new UncheckedIOException(e);
   }
 }
 ```
 
+We create a one-element stream containing the stream we want to return
+and call `flatMap` with the identity function to immediately flatten
+the created one-element stream.
 The mentioned property of `flatMap` ensures that the underlying file is closed
 when the returned stream is consumed completely.
 

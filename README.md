@@ -24,7 +24,7 @@ You can use your global git config in the container as follows.
 
     # cp ~/.gitconfig .git/config
 
-You ssh keys are mounted into the container automatically.
+Your ssh keys are mounted into the container automatically.
 If that does not work or you have permission issues
 you may want to adjust corresponding settings in the `docker-compose.yml` file.
 

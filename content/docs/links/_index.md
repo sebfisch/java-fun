@@ -26,3 +26,7 @@ in order of appearance.
   * [Predicate](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/Predicate.html)
   * [Consumer](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/Consumer.html)
   * [try-with-resources](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
+  * [Optional API](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/Optional.html)
+  * [double dispatch](https://en.wikipedia.org/wiki/Double_dispatch)
+  * [default implementation](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
+

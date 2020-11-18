@@ -53,7 +53,7 @@ can be used to manipulate combined expressions, including those containing funct
 In this tutorial, we will look at combining forms, or *combinators*,
 that are particularly prevalent: `map`, `filter`, and `flatMap`.
 All of them are provided for different types by Java's standard library.
-We will discuss how to use them for two of those types and then 
+We will discuss how to use them for [Streams](docs/streams/) and [Optionals](docs/optionals/) and then 
 implement our own types providing these combinators.
 
 The underlying source code is available online, 
