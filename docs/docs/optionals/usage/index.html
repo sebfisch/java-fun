@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Using Optionals #  In order to discuss how to replace null checks with idiomatic use of optional combinators, we introduce types representing arithmetic expressions and implement different methods to evaluate them.
+Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Using Optionals" />
+<meta property="og:description" content="Using Optionals #  In order to discuss how to replace null checks with idiomatic use of optional combinators, we introduce types representing arithmetic expressions and implement different methods to evaluate them.
+Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/optionals/usage/" />
+<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
+<title>Using Optionals | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class=" active">Using Optionals</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Using Optionals</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#arithmetic-expressions">Arithmetic expressions</a></li>
+    <li><a href="#explicit-null-checks">Explicit <code>null</code> checks</a></li>
+    <li><a href="#naive-use-of-optionals">Naive use of optionals</a></li>
+    <li><a href="#idiomatic-use-of-optionals">Idiomatic use of optionals</a>
+      <ul>
+        <li><a href="#flatmap-specializes-sequences"><code>flatMap</code> specializes sequences</a></li>
+        <li><a href="#filter-specializes-conditionals"><code>filter</code> specializes conditionals</a></li>
+        <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="using-optionals">
+  Using Optionals
+  <a class="anchor" href="#using-optionals">#</a>
+</h1>
+<p>In order to discuss how to replace <code>null</code> checks with idiomatic use of optional combinators,
+we introduce types representing arithmetic expressions
+and implement different methods to evaluate them.</p>
+<h2 id="arithmetic-expressions">
+  Arithmetic expressions
+  <a class="anchor" href="#arithmetic-expressions">#</a>
+</h2>
+<p>Arithmetic expressions come in different variants.
+We restrict ourselves to representing constants and
+applications of binary operators for basic arithmetic operations.
+The different kinds of expressions are represented as different classes
+<code>Num</code> and <code>Bin</code> implementing the interface <code>Exp</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Exp</span> <span style="color:#f92672">{</span>
+  <span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> R <span style="color:#a6e22e">transform</span><span style="color:#f92672">(</span>ExpTransform<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> toResult<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>As we want to implement different methods for evaluating expressions we use
+<a href="https://en.wikipedia.org/wiki/Double_dispatch">double dispatch</a>
+and implement different evaluators as instances of the interface <code>ExpTransform&lt;R&gt;</code>.
+This interface has overloaded methods to transform each possible type of expressions.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ExpTransform</span><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">default</span> R <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Exp exp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> exp<span style="color:#f92672">.</span><span style="color:#a6e22e">transform</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+  R <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Num num<span style="color:#f92672">);</span>
+  R <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The
+<a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">default implementation</a>
+for the <code>Exp</code> type
+calls the <code>transform</code> method of the given expression
+which needs to be implemented in concrete classes
+by dispatching to one of the other overloaded <code>fromExp</code> methods.</p>
+<p>The class <code>Num</code> represents integer constants.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Num</span> <span style="color:#66d9ef">implements</span> Exp <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> value<span style="color:#f92672">;</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Num</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+  
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> R <span style="color:#a6e22e">transform</span><span style="color:#f92672">(</span>ExpTransform<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> toResult<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> toResult<span style="color:#f92672">.</span><span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> value<span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>It wraps an internal value providing read-access via <code>getValue</code>.
+More complex expressions can be constructed using the class <code>Bin</code>
+representing applications of binary operators.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Bin</span> <span style="color:#66d9ef">implements</span> Exp <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> BinOp op<span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Exp leftArg<span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Exp rightArg<span style="color:#f92672">;</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bin</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> op<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> Exp leftArg<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> Exp rightArg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">op</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BinOp<span style="color:#f92672">(</span>op<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">leftArg</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>leftArg<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rightArg</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>rightArg<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> R <span style="color:#a6e22e">transform</span><span style="color:#f92672">(</span>ExpTransform<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> toResult<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> toResult<span style="color:#f92672">.</span><span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+  
+  <span style="color:#75715e">// getters for private members omitted
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>It wraps values representing the operator as well as its arguments
+providing read-access via corresponding getter methods.
+The operator is represented by the class <code>BinOp</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BinOp</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> chr<span style="color:#f92672">;</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">BinOp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> chr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">chr</span> <span style="color:#f92672">=</span> chr<span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">char</span> <span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> chr<span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> left<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// implementation omitted
+</span><span style="color:#75715e"></span>  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The implementation of <code>apply</code> uses corresponding Java operators
+for basic arithmetic operations.
+With these definitions, the arithmetic expression <code>1 + 2 / 3</code> can be represented
+using the following Java expression.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">new</span> Bin<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;+&#39;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Num<span style="color:#f92672">(</span>1<span style="color:#f92672">),</span> <span style="color:#66d9ef">new</span> Bin<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;/&#39;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Num<span style="color:#f92672">(</span>2<span style="color:#f92672">),</span> <span style="color:#66d9ef">new</span> Num<span style="color:#f92672">(</span>3<span style="color:#f92672">)))</span>
+</code></pre></div><p>Here is a first version of an evaluator for arithmetic expressions<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Evaluator</span> <span style="color:#66d9ef">implements</span> ExpTransform<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Num num<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> num<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> Integer left <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">final</span> Integer right <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">return</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">().</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The version of <code>fromExp</code> for constants simply returns the wrapped value.
+For applications of binary operators,
+<code>fromExp</code> is called recursively to evaluate both arguments
+before applying the operator to compute the result.</p>
+<h2 id="explicit-null-checks">
+  Explicit <code>null</code> checks
+  <a class="anchor" href="#explicit-null-checks">#</a>
+</h2>
+<p>The shown evaluator will throw an arithmetic exception
+when division by zero occurs during the evaluation.
+Our next evaluator avoids runtime exceptions and returns <code>null</code> instead.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NullEvaluator</span> <span style="color:#66d9ef">implements</span> ExpTransform<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Num num<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> num<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> Integer left <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">final</span> Integer right <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">());</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">return</span> applyOp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">(),</span> left<span style="color:#f92672">,</span> right<span style="color:#f92672">);</span>
+</span>  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">private</span> Integer <span style="color:#a6e22e">applyOp</span><span style="color:#f92672">(</span>BinOp op<span style="color:#f92672">,</span> Integer left<span style="color:#f92672">,</span> Integer right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>left <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> right <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">||</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">&amp;&amp;</span> right <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The method for <code>Num</code> instances is unchanged.
+The version for <code>Bin</code> uses <code>applyOp</code> to check for division by zero
+instead of applying the operator directly.
+As recursive calls might return <code>null</code>,
+it also implements explicit <code>null</code> checks for their results.</p>
+<p>Unfortunately, returning <code>null</code> when evaluating expressions
+is just as likely to cause a runtime exception down the road
+if callers are not aware of possibly missing results.</p>
+<h2 id="naive-use-of-optionals">
+  Naive use of optionals
+  <a class="anchor" href="#naive-use-of-optionals">#</a>
+</h2>
+<p>Our next evaluator replaces nullable integers with optional ones.
+Initially, the implementation mimics the previous version,
+replacing <code>null</code> checks with corresponding checks on optionals.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OptEvaluator</span> <span style="color:#66d9ef">implements</span> ExpTransform<span style="color:#f92672">&lt;</span>Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Num num<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>num<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">());</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#a6e22e">@Override</span>
+  <span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> left <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> right <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">());</span>
+    <span style="color:#66d9ef">return</span> applyOp<span style="color:#f92672">(</span>bin<span style="color:#f92672">,</span> left<span style="color:#f92672">,</span> right<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+
+  <span style="color:#66d9ef">private</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span>
+      <span style="color:#a6e22e">applyOp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">,</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> left<span style="color:#f92672">,</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> BinOp op <span style="color:#f92672">=</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>left<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">()</span> <span style="color:#f92672">||</span> right<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">()</span>
+        <span style="color:#f92672">||</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">&amp;&amp;</span> right<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(),</span> right<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()));</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>As mentioned previously, optionals are primarily intended to be used
+in the result type of methods.
+However, the new version of <code>applyOp</code> uses <code>Optional</code> not only in the result type
+but also in the type of two arguments.
+Moreover, first checking if an optional value is present
+and then using <code>get</code> to access it
+is a common anti-pattern when programming with optionals.</p>
+<h2 id="idiomatic-use-of-optionals">
+  Idiomatic use of optionals
+  <a class="anchor" href="#idiomatic-use-of-optionals">#</a>
+</h2>
+<p>We will now transform this implementation
+making more idiomatic use of the optional combinators in every step.
+As it turns out, we do not need the method <code>applyOp</code>
+to implement error handling
+but can use <code>map</code>, <code>filter</code>, and <code>flatMap</code> instead.</p>
+<h3 id="flatmap-specializes-sequences">
+  <code>flatMap</code> specializes sequences
+  <a class="anchor" href="#flatmap-specializes-sequences">#</a>
+</h3>
+<p>Here is an alternative implementation of <code>fromExp</code> for <code>Bin</code> arguments
+that replaces the sequence of recursive calls with nested calls to <code>flatMap</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> BinOp op <span style="color:#f92672">=</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">return</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>left <span style="color:#f92672">-&gt;</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>op<span style="color:#f92672">.</span><span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">&amp;&amp;</span> right <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Here, <code>left</code> and <code>right</code> are <code>Integer</code> values guaranteed to be not <code>null</code>,
+so we do not need to check them any more or use <code>get</code> to access their values.</p>
+<h3 id="filter-specializes-conditionals">
+  <code>filter</code> specializes conditionals
+  <a class="anchor" href="#filter-specializes-conditionals">#</a>
+</h3>
+<p>Next, we can use <code>filter</code> to sort out values that would lead to division by zero
+before calling <code>flatMap</code> for the <code>right</code> argument.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> BinOp op <span style="color:#f92672">=</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">return</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>left <span style="color:#f92672">-&gt;</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">())</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">||</span> right <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">))));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>We negate the condition used before
+to describe those elements that will <em>not</em> lead to division by zero
+and use it in the argument passed to <code>filter</code>.</p>
+<h3 id="map-specializes-flatmap">
+  <code>map</code> specializes <code>flatMap</code>
+  <a class="anchor" href="#map-specializes-flatmap">#</a>
+</h3>
+<p>Finally, we can emply a useful property for reasoning about programs
+involving optional combinators.
+Calling <code>flatMap</code> and immediately creating an optional value in the passed function
+is equivalent to calling <code>map</code> with a corresponding function
+that does not create an optional value.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> BinOp op <span style="color:#f92672">=</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">return</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>left <span style="color:#f92672">-&gt;</span>
+  fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">())</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">getChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">||</span> right <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">)));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Here, the second call to <code>flatMap</code> has been replaced with a corresponding call to <code>map</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>We use the boxed type <code>Integer</code> instead of the primitive type <code>int</code> as result type
+because parameters of generic types like <code>ExpTransform&lt;R&gt;</code>
+cannot be instantiated with primitive types.
+If we would experience the performance penalty of boxing
+we could specialize used generic types with versions using <code>int</code> instead of a type parameter. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#arithmetic-expressions">Arithmetic expressions</a></li>
+    <li><a href="#explicit-null-checks">Explicit <code>null</code> checks</a></li>
+    <li><a href="#naive-use-of-optionals">Naive use of optionals</a></li>
+    <li><a href="#idiomatic-use-of-optionals">Idiomatic use of optionals</a>
+      <ul>
+        <li><a href="#flatmap-specializes-sequences"><code>flatMap</code> specializes sequences</a></li>
+        <li><a href="#filter-specializes-conditionals"><code>filter</code> specializes conditionals</a></li>
+        <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

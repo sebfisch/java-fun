@@ -13,7 +13,7 @@ The map combinator #  The map combinator has the following signature1.
 &lt;R&gt; Stream&lt;R&gt; map(Function&lt;T,R&gt; function); It expects a Function as argument, which is itself a generic type with type parameters for the argument and result types. The argument type of the passed function needs to match the element type of the original stream." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/streams/tests/" />
-<meta property="article:modified_time" content="2020-10-29T14:56:19+01:00" />
+<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
 <title>Combinators in Isolation | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -89,6 +89,50 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
   
 
         </li>
@@ -223,7 +267,7 @@ instance of an anonymous class.</p>
 </code></pre></div><p>The <code>apply</code> method is applied to each string in the stream <code>words</code>
 and all results are collected in the new stream <code>result</code>.</p>
 <p>Note that we do not see
-in which order a given functions is applied to the elements of a stream by <code>map</code>.
+in which order a given function is applied to the elements of a stream by <code>map</code>.
 In fact it might be applied in parallel depending on how the stream was created.
 All we can see is that the function is applied to each element uniformly
 rather than one element at a time.</p>
@@ -279,8 +323,8 @@ returned by the given function.</p>
   <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> words<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">chars</span><span style="color:#f92672">().</span><span style="color:#a6e22e">boxed</span><span style="color:#f92672">());</span>
   assertEquals<span style="color:#f92672">(</span>12<span style="color:#f92672">,</span> result<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">());</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><p>The lambda expression used as argument of <code>flatMap</code> is, again, equivalent to
-an instance of an anonymous class.
+</code></pre></div><p>The lambda expression used as argument of <code>flatMap</code> is equivalent to
+an instance of an anonymous class implementing <code>Function&lt;String,Stream&lt;Integer&gt;&gt;</code>.
 The method <code>chars</code> on strings returns an <code>IntStream</code>
 which is a stream where the elements are primitive <code>int</code> values
 (one for each character of the string.)
@@ -289,7 +333,7 @@ into a stream of type <code>Stream&lt;Integer&gt;</code>
 to match the result type of the argument passed to <code>flatMap</code>.
 This time we use the <em>terminal operation</em> <code>count</code> on the stream <code>result</code>
 to collect all 12 elements into a single number.</p>
-<p>The <code>flatMap</code> combinator can be used to flatten a nested string
+<p>The <code>flatMap</code> combinator can be used to flatten a nested stream
 as the following test demonstrates.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
 <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapWithIdentityFunctionFlattensNestedStreams</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>

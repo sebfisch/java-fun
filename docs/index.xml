@@ -27,5 +27,26 @@ The map combinator #  The map combinator has the following signature1.
 Implementing source file search #  Our application will search through files in a given folder and print all lines containing a match for a given regular expression. We will only search in Java source files in the given folder. When searching for lines matching the regular expression /public static[^=]*\(/ in our own src folder, our application might produce output like this.</description>
     </item>
     
+    <item>
+      <title>Combinators in Isolation</title>
+      <link>http://sebfisch.github.io/java-fun/docs/optionals/tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/optionals/tests/</guid>
+      <description>Combinators in Isolation #  In Java, optionals are instances of the generic type Optional&amp;lt;T&amp;gt; which has a type parameter T for the type of wrapped elements. The combinators map, filter and flatMap discussed with streams are also available for optionals.
+The map combinator #  The map combinator has the following signature1.
+&amp;lt;R&amp;gt; Optional&amp;lt;R&amp;gt; map(Function&amp;lt;T,R&amp;gt; function); Apart from the result type, the type is the same as the type of map for streams.</description>
+    </item>
+    
+    <item>
+      <title>Using Optionals</title>
+      <link>http://sebfisch.github.io/java-fun/docs/optionals/usage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/optionals/usage/</guid>
+      <description>Using Optionals #  In order to discuss how to replace null checks with idiomatic use of optional combinators, we introduce types representing arithmetic expressions and implement different methods to evaluate them.
+Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp.</description>
+    </item>
+    
   </channel>
 </rss>

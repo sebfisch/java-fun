@@ -4,16 +4,18 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Docs" />
+<meta name="description" content="Optionals #  Java provides an Optional API for handling missing values with functional combinators.
+ Optional is primarily intended for use as a method return type where there is a clear need to represent &ldquo;no result,&rdquo; and where using null is likely to cause errors.
+ The combinators map, filter and flatMap are useful for handling optional values, but their use does not come naturally to programmers who are used to conventional programming patterns involving null checks.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Optionals" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/optionals/" />
 
-<title>Docs | Java Fun</title>
+<title>Optionals | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><link rel="alternate" type="application/rss+xml" href="http://sebfisch.github.io/java-fun/docs/index.xml" title="Java Fun" />
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><link rel="alternate" type="application/rss+xml" href="http://sebfisch.github.io/java-fun/docs/optionals/index.xml" title="Java Fun" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -103,7 +105,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class=" active">Optionals</a>
   
 
           
@@ -193,7 +195,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <strong>Docs</strong>
+  <strong>Optionals</strong>
 
   <label for="toc-control">
     
@@ -206,7 +208,7 @@ https://github.com/alex-shpak/hugo-book
   
   <aside class="hidden clearfix">
     
-  
+  <nav id="TableOfContents"></nav>
 
 
   </aside>
@@ -216,7 +218,37 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown"></article>
+  <article class="markdown"><h1 id="optionals">
+  Optionals
+  <a class="anchor" href="#optionals">#</a>
+</h1>
+<p>Java provides an
+<a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/Optional.html">Optional API</a>
+for handling missing values with functional combinators.</p>
+<blockquote>
+<p><code>Optional</code> is primarily intended for use as a method return type where there is a clear need to represent &ldquo;no result,&rdquo; and where using <code>null</code> is likely to cause errors.</p>
+</blockquote>
+<p>The combinators <code>map</code>, <code>filter</code> and <code>flatMap</code> are useful for handling optional values,
+but their use does not come naturally to programmers who are used to
+conventional programming patterns involving <code>null</code> checks.
+After introducing the <code>Optional</code> interface via <a href="tests/">unit tests</a>
+demonstrating the behaviour of selected combinators,
+we show how to transform traditional <code>null</code> checks into idiomatic use of optionals.
+We will also discuss anti-patterns when programming with optionals
+and how to avoid them.</p>
+<p>At the same time, we will see another example of how the functional combinators can be used
+as <em>powerful combining forms for building new programs from existing ones</em>
+while employing <em>useful properties for reasoning about programs</em>
+as mentioned in the introduction to this tutorial.
+More specifically, we will see how programs that would conventionally use
+sequencing and conditional statements
+can be expressed using expressions involving functional interfaces with optionals.
+Our discussion of this combinatorial style of programming
+by means of the relatively simple type of optionals
+will serve as a bridge to combinatorial parsing
+and can help consolidate and extend intuitions assiciated with <code>map</code>, <code>filter</code> and <code>flatMap</code>
+that are independent of concrete types implementing these combinators.</p>
+</article>
  
       
 
@@ -248,7 +280,7 @@ by
     
     <aside class="book-toc">
       
-  
+  <nav id="TableOfContents"></nav>
 
  
     </aside>

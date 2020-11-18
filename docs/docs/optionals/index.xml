@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Optionals on Java Fun</title>
+    <link>http://sebfisch.github.io/java-fun/docs/optionals/</link>
+    <description>Recent content in Optionals on Java Fun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="http://sebfisch.github.io/java-fun/docs/optionals/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Combinators in Isolation</title>
+      <link>http://sebfisch.github.io/java-fun/docs/optionals/tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/optionals/tests/</guid>
+      <description>Combinators in Isolation #  In Java, optionals are instances of the generic type Optional&amp;lt;T&amp;gt; which has a type parameter T for the type of wrapped elements. The combinators map, filter and flatMap discussed with streams are also available for optionals.
+The map combinator #  The map combinator has the following signature1.
+&amp;lt;R&amp;gt; Optional&amp;lt;R&amp;gt; map(Function&amp;lt;T,R&amp;gt; function); Apart from the result type, the type is the same as the type of map for streams.</description>
+    </item>
+    
+    <item>
+      <title>Using Optionals</title>
+      <link>http://sebfisch.github.io/java-fun/docs/optionals/usage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/optionals/usage/</guid>
+      <description>Using Optionals #  In order to discuss how to replace null checks with idiomatic use of optional combinators, we introduce types representing arithmetic expressions and implement different methods to evaluate them.
+Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -11,7 +11,7 @@ Implementing source file search #  Our application will search through files in 
 Implementing source file search #  Our application will search through files in a given folder and print all lines containing a match for a given regular expression. We will only search in Java source files in the given folder. When searching for lines matching the regular expression /public static[^=]*\(/ in our own src folder, our application might produce output like this." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/streams/practice/" />
-<meta property="article:modified_time" content="2020-11-02T12:39:11+01:00" />
+<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
 <title>Streams in Practice | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -87,6 +87,50 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class=" active">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
   
 
         </li>
@@ -255,8 +299,8 @@ instance of an anonymous class.</p>
 but as it stands it prints only matching lines and no file names.
 We can extend the pipeline to print file names as follows.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">javaFiles <span style="color:#75715e">//
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span> <span style="color:#75715e">// ONLY THIS LINE IS NEW
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>SrcFileSearch<span style="color:#f92672">::</span>getLines<span style="color:#f92672">)</span> <span style="color:#75715e">//
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span> <span style="color:#75715e">// ONLY THIS LINE IS NEW
+</span></span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>SrcFileSearch<span style="color:#f92672">::</span>getLines<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
 </code></pre></div><p>The <code>peek</code> method expects a consumer as argument, applies it to every element,
@@ -275,8 +319,8 @@ matching lines from the corresponding file.</p>
 <p>As it stands, our application prints the name of every searched file.
 We can extend it as follows to print only files that include at least one matching line.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">javaFiles <span style="color:#75715e">//
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>file <span style="color:#f92672">-&gt;</span> getLines<span style="color:#f92672">(</span>file<span style="color:#f92672">).</span><span style="color:#a6e22e">anyMatch</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">))</span> <span style="color:#75715e">// ADDED THIS LINE
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span> <span style="color:#75715e">//
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>file <span style="color:#f92672">-&gt;</span> getLines<span style="color:#f92672">(</span>file<span style="color:#f92672">).</span><span style="color:#a6e22e">anyMatch</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">))</span> <span style="color:#75715e">// ADDED THIS LINE
+</span></span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>SrcFileSearch<span style="color:#f92672">::</span>getLines<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
@@ -289,8 +333,8 @@ the stream contains at least one element satisfying the given predicate.</p>
 used as search root.
 We can extend it as follows to print absolute file names instead.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">javaFiles <span style="color:#75715e">//
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Path<span style="color:#f92672">::</span>toAbsolutePath<span style="color:#f92672">)</span> <span style="color:#75715e">// THE ONLY NEW LINE
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>file <span style="color:#f92672">-&gt;</span> getLines<span style="color:#f92672">(</span>file<span style="color:#f92672">).</span><span style="color:#a6e22e">anyMatch</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">))</span> <span style="color:#75715e">//
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Path<span style="color:#f92672">::</span>toAbsolutePath<span style="color:#f92672">)</span> <span style="color:#75715e">// THE ONLY NEW LINE
+</span></span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>file <span style="color:#f92672">-&gt;</span> getLines<span style="color:#f92672">(</span>file<span style="color:#f92672">).</span><span style="color:#a6e22e">anyMatch</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">))</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>SrcFileSearch<span style="color:#f92672">::</span>getLines<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">)</span> <span style="color:#75715e">//
@@ -317,18 +361,18 @@ The stream pipeline developed before does not need to be changed.</p>
 <p>The pipeline starts with a stream of file names returned by the method <code>getJavaFiles</code>
 defined above.
 That mathod can throw an <code>IOException</code> which we handle in our <code>main</code> method.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Path<span style="color:#f92672">&gt;</span> javaFiles <span style="color:#f92672">=</span> getJavaFiles<span style="color:#f92672">(</span>srcPath<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-  javaFiles <span style="color:#75715e">//
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Path<span style="color:#f92672">&gt;</span> javaFiles <span style="color:#f92672">=</span> getJavaFiles<span style="color:#f92672">(</span>srcPath<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span>  javaFiles <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Path<span style="color:#f92672">::</span>toAbsolutePath<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>file <span style="color:#f92672">-&gt;</span> getLines<span style="color:#f92672">(</span>file<span style="color:#f92672">).</span><span style="color:#a6e22e">anyMatch</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">))</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">peek</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>SrcFileSearch<span style="color:#f92672">::</span>getLines<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>containsMatch<span style="color:#f92672">)</span> <span style="color:#75715e">//
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-  System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">());</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>We use a
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">  System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">());</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">}</span>
+</span></code></pre></div><p>We use a
 <a href="https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html">try-with-resources</a>
 statement to make sure that the stream is closed eventually in addition to handling
 exceptions.
@@ -371,10 +415,10 @@ we need to add a <code>catch</code> clause for <code>UncheckedIOException</code>
 </span><span style="color:#75715e"></span>      <span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
   System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">());</span>
-<span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>UncheckedIOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-  System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">());</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>The necessity to wrap exceptions in unchecked exception types is an indication
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>UncheckedIOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">  System<span style="color:#f92672">.</span><span style="color:#a6e22e">err</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">());</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#f92672">}</span>
+</span></code></pre></div><p>The necessity to wrap exceptions in unchecked exception types is an indication
 that the integration of functional programming patterns in conventional languages
 is not always seamless because functional features are added to existing features
 like exception handling after the fact.
@@ -395,7 +439,7 @@ after the stream&rsquo;s operations have completed.</p>
 would not have the desired effect
 because the stream is returned from the function and consumed outside of it.
 Instead we make sure that the stream returned by <code>getLines</code> is closed
-whenever we call <code>getLines</code>.</p>
+in a different way.</p>
 <p>The first call to <code>getLines</code> in the argument to <code>filter</code> is problematic.
 In general, terminal operations do not close the streams they consume,
 and <code>anyMatch</code> is no exception.
@@ -411,12 +455,15 @@ We can change the definition of <code>getLines</code> as follows to make sure
 files are always closed after consuming the returned stream.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getLines</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> Path file<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
   <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>Files<span style="color:#f92672">.</span><span style="color:#a6e22e">lines</span><span style="color:#f92672">(</span>file<span style="color:#f92672">)).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>s <span style="color:#f92672">-&gt;</span> s<span style="color:#f92672">);</span>
-  <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">return</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>Files<span style="color:#f92672">.</span><span style="color:#a6e22e">lines</span><span style="color:#f92672">(</span>file<span style="color:#f92672">)).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>s <span style="color:#f92672">-&gt;</span> s<span style="color:#f92672">);</span> <span style="color:#75715e">// CHANGED
+</span></span><span style="color:#75715e"></span>  <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> UncheckedIOException<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
   <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><p>The mentioned property of <code>flatMap</code> ensures that the underlying file is closed
+</code></pre></div><p>We create a one-element stream containing the stream we want to return
+and call <code>flatMap</code> with the identity function to immediately flatten
+the created one-element stream.
+The mentioned property of <code>flatMap</code> ensures that the underlying file is closed
 when the returned stream is consumed completely.</p>
 <p>In general, wrapping a stream inside a one-element stream and then flattening
 the resulting stream using <code>flatMap</code> with the identity function

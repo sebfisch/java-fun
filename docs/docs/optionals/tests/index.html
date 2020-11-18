@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Combinators in Isolation #  In Java, optionals are instances of the generic type Optional&lt;T&gt; which has a type parameter T for the type of wrapped elements. The combinators map, filter and flatMap discussed with streams are also available for optionals.
+The map combinator #  The map combinator has the following signature1.
+&lt;R&gt; Optional&lt;R&gt; map(Function&lt;T,R&gt; function); Apart from the result type, the type is the same as the type of map for streams.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Combinators in Isolation" />
+<meta property="og:description" content="Combinators in Isolation #  In Java, optionals are instances of the generic type Optional&lt;T&gt; which has a type parameter T for the type of wrapped elements. The combinators map, filter and flatMap discussed with streams are also available for optionals.
+The map combinator #  The map combinator has the following signature1.
+&lt;R&gt; Optional&lt;R&gt; map(Function&lt;T,R&gt; function); Apart from the result type, the type is the same as the type of map for streams." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/optionals/tests/" />
+<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
+<title>Combinators in Isolation | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class=" active">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Combinators in Isolation</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-map-combinator">The <code>map</code> combinator</a></li>
+    <li><a href="#the-filter-combinator">The <code>filter</code> combinator</a></li>
+    <li><a href="#the-flatmap-combinator">The <code>flatMap</code> combinator</a></li>
+    <li><a href="#task-reasoning">Task: Reasoning</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="combinators-in-isolation">
+  Combinators in Isolation
+  <a class="anchor" href="#combinators-in-isolation">#</a>
+</h1>
+<p>In Java, optionals are instances of the
+<a href="https://docs.oracle.com/javase/tutorial/java/generics/types.html">generic type</a>
+<code>Optional&lt;T&gt;</code> which has a type parameter <code>T</code> for the type of wrapped elements.
+The combinators <code>map</code>, <code>filter</code> and <code>flatMap</code> discussed with streams
+are also available for optionals.</p>
+<h2 id="the-map-combinator">
+  The <code>map</code> combinator
+  <a class="anchor" href="#the-map-combinator">#</a>
+</h2>
+<p>The <code>map</code> combinator has the following signature<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Optional<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>R<span style="color:#f92672">&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>Apart from the result type, the type is the same as the type of <code>map</code> for streams.
+The following tests assert that <code>map</code> applies the given function to the wrapped element
+if one is present.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatMapOnEmptyYieldsEmpty</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> empty <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> empty<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">());</span>
+  assertTrue<span style="color:#f92672">(</span>result<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatMapAppliesGivenFunctionToPresentElement</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> word <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> word<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">());</span>
+  assertEquals<span style="color:#f92672">(</span>Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>5<span style="color:#f92672">),</span> result<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>In the first test the lambda expression is not called.
+In the second test it is applied to the wrapped string
+and the result is wrapped in a new optional value.</p>
+<p>The static methods <code>Optional.empty</code> and <code>Optional.of</code> can be used to create optional values.
+<code>Optional.of</code> throws an exception when <code>null</code> is passed as argument.
+There is also <code>Optional.ofNullable</code> which returns an empty optional value when passed <code>null</code>.
+The methods <code>isEmpty</code> and <code>isPresent</code> can be used to check if a value is present.</p>
+<h2 id="the-filter-combinator">
+  The <code>filter</code> combinator
+  <a class="anchor" href="#the-filter-combinator">#</a>
+</h2>
+<p>The <code>filter</code> combinator has the following signature.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Optional<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Predicate<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> predicate<span style="color:#f92672">);</span>
+</code></pre></div><p>Again, the type resembles the type of <code>filter</code> we have already seen for streams.
+The following tests assert that <code>filter</code> applies the given predicate to a wrapped element.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFilterRemovesNonMatchingElement</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> word <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> word<span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 6<span style="color:#f92672">);</span>
+  assertTrue<span style="color:#f92672">(</span>result<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFilterKeepsMatchingElement</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> word <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Optionals&#34;</span><span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span> word<span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 6<span style="color:#f92672">);</span>
+  assertEquals<span style="color:#f92672">(</span>word<span style="color:#f92672">,</span> result<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Only matching elements are kept in the result.</p>
+<h2 id="the-flatmap-combinator">
+  The <code>flatMap</code> combinator
+  <a class="anchor" href="#the-flatmap-combinator">#</a>
+</h2>
+<p>The <code>flatMap</code> combinator has the following signature, resembling <code>flatMap</code> for streams.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Optional<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>Optional<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>The following tests assert that <code>flatMap</code> applies the given function to the wrapped element
+(if one is present) and returns its result.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapOnEmptyYieldsEmpty</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> empty <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span>
+      empty<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">chars</span><span style="color:#f92672">().</span><span style="color:#a6e22e">boxed</span><span style="color:#f92672">().</span><span style="color:#a6e22e">findFirst</span><span style="color:#f92672">());</span>
+  assertTrue<span style="color:#f92672">(</span>result<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapOnPresentReturnsEmptyResultOfGivenFunction</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> String value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> word <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>value<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span>
+      word<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">chars</span><span style="color:#f92672">().</span><span style="color:#a6e22e">boxed</span><span style="color:#f92672">().</span><span style="color:#a6e22e">findFirst</span><span style="color:#f92672">());</span>
+  assertTrue<span style="color:#f92672">(</span>result<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFlatMapOnPresentReturnsPresentResultOfGivenFunction</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> String value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> word <span style="color:#f92672">=</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>value<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> result <span style="color:#f92672">=</span>
+      word<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>w <span style="color:#f92672">-&gt;</span> w<span style="color:#f92672">.</span><span style="color:#a6e22e">chars</span><span style="color:#f92672">().</span><span style="color:#a6e22e">boxed</span><span style="color:#f92672">().</span><span style="color:#a6e22e">findFirst</span><span style="color:#f92672">());</span>
+  assertEquals<span style="color:#f92672">(</span>Character<span style="color:#f92672">.</span><span style="color:#a6e22e">codePointAt</span><span style="color:#f92672">(</span>value<span style="color:#f92672">,</span> 0<span style="color:#f92672">),</span> result<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The terminal operation <code>findFirst</code> on streams is an example of a method
+that may have &ldquo;no result.&rdquo;
+It returns the first element of a stream represented as optional value
+that is empty if the stream is empty.
+The method <code>get</code> on optional values used in the third test
+returns the wrapped element if one is present.
+If not, the call throws an exception.
+The API documentation for <code>get</code> states that the method <code>orElseThrow</code>
+with the same behaviour should be used instead,
+but we will stick with <code>get</code> in this tutorial.</p>
+<h2 id="task-reasoning">
+  Task: Reasoning
+  <a class="anchor" href="#task-reasoning">#</a>
+</h2>
+<p>Think about useful properties that can be used to manipulate or reason about
+expressions involving the presented combinators
+and write more tests to check these properties.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Real signatures might be more general than what is shown here because we specialize
+<a href="https://docs.oracle.com/javase/tutorial/java/generics/bounded.html">bounded type parameters</a>. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-map-combinator">The <code>map</code> combinator</a></li>
+    <li><a href="#the-filter-combinator">The <code>filter</code> combinator</a></li>
+    <li><a href="#the-flatmap-combinator">The <code>flatMap</code> combinator</a></li>
+    <li><a href="#task-reasoning">Task: Reasoning</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
