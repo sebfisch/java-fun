@@ -11,8 +11,8 @@ for data processing with higher-order functions.
 Stream processing consists of three parts:
 
   * creating a stream of data elements,
-  * transforming the elements of the stream uniformly, and finally
-  * collecting all elements into a processed result.
+  * transforming the elements of the stream uniformly,
+  * and finally collecting all elements into a processed result.
 
 The `map`, `filter`, and `flatMap` combinators are used in the second part
 and allow to implement complex transformation algorithms in a compositional way.

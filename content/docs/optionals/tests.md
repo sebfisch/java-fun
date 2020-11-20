@@ -131,6 +131,9 @@ but we will stick with `get` in this tutorial.
 
 ## Task: Reasoning
 
-Think about useful properties that can be used to manipulate or reason about
+Think about properties that can be used to manipulate or reason about
 expressions involving the presented combinators
 and write more tests to check these properties.
+Can you express some of the presented combinators using others
+in a way that would allow arbitrary applications of one combinator
+to be replaced by a corresponding application of another?

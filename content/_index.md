@@ -34,7 +34,7 @@ Java is no exception.
 
 The word __pattern__ is used here in the sense of *design pattern* 
 (and not as in pattern matching.)
-In functional programming, design patterns often take the form of so called 
+In functional programming, design patterns often can be implemented in terms of so called 
 higher-order functions, which are functions that take other functions as arguments
 or return other functions as results.
 In modern Java, functions can be represented using 
@@ -43,8 +43,10 @@ and corresponding instances can be written concisely using
 [lambda expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
 or 
 [method references](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
+
 Representing functions as values (or objects in Java) allows them to be used in expressions
-without executing them right away as in statements including procedure (or method) calls.
+without executing them right away 
+as they would be in statements including procedure (or method) calls.
 In expressions, functions can be more flexibly combined 
 for building new programs from existing ones.
 Algebraic properties, similar to primary school arithmetic, 
@@ -73,6 +75,3 @@ and provide the URL of the accompanying source code repository.
 Alternatively, you can use `git` to clone the repository,
 open the corresponding folder in VS Code,
 and then select *Reopen Folder in Container*.
-
-The most eye-catching use of functional programming patterns in Java is probably with
-[streams](docs/streams/), so let's start with them.

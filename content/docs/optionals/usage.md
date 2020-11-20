@@ -191,7 +191,7 @@ Unfortunately, returning `null` when evaluating expressions
 is just as likely to cause a runtime exception down the road
 if callers are not aware of possibly missing results.
 
-## Naive use of optionals
+## Naïve use of optionals
 
 Our next evaluator replaces nullable integers with optional ones.
 Initially, the implementation mimics the previous version,
@@ -243,7 +243,8 @@ but can use `map`, `filter`, and `flatMap` instead.
 ### `flatMap` specializes sequences
 
 Here is an alternative implementation of `fromExp` for `Bin` arguments
-that replaces the sequence of recursive calls with nested calls to `flatMap`.
+that replaces the sequence of recursive calls with nested calls to `flatMap`
+for their results.
 
 ```java
 @Override
@@ -287,7 +288,7 @@ and use it in the argument passed to `filter`.
 
 ### `map` specializes `flatMap`
 
-Finally, we can emply a useful property for reasoning about programs
+Finally, we can employ a useful property for reasoning about programs
 involving optional combinators.
 Calling `flatMap` and immediately creating an optional value in the passed function
 is equivalent to calling `map` with a corresponding function
@@ -306,3 +307,12 @@ public Optional<Integer> fromExp(Bin bin) {
 ```
 
 Here, the second call to `flatMap` has been replaced with a corresponding call to `map`.
+
+Guided by useful properties for reasoning about `map`, `filter`, and `flatMap`,
+we have transformed a naïve version of the `OptEvaluator`
+into another version that makes idiomatic use of optional combinators
+and avoids common anti-patterns.
+It is not only safer than the `NullEvaluator` based on explicit `null` checks
+but also shorter.
+
+## Task: Refactoring Anti-Patterns

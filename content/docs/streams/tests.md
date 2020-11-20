@@ -60,7 +60,7 @@ Note that we do not see
 in which order a given function is applied to the elements of a stream by `map`.
 In fact it might be applied in parallel depending on how the stream was created.
 All we can see is that the function is applied to each element uniformly
-rather than one element at a time.
+not necessarily one element at a time.
 
 ## The `filter` combinator
 
@@ -103,8 +103,7 @@ new Predicate<String>() {
 
 The `test` method is applied to each string in the stream `words`
 and those strings where `test` returns `true` are collected in the new stream `result`.
-
-The given predicate is applied uniformly to the elements of a stream by `filter`,
+In general, the given predicate is applied uniformly to the elements of a stream by `filter`,
 not necessarily one at a time, and possibly in parallel.
 
 ## The `flatMap` combinator
@@ -117,9 +116,8 @@ The `flatMap` combinator has the following signature.
 
 It expects a function as argument where the argument type needs to match
 the element type of the original stream.
-The result type of the function passed as argument to `flatMap`
-needs to be a stream itself, and the corresponding element type
-matches the element type of the returned stream.
+The result of the function passed as argument to `flatMap` needs to be a stream itself, 
+and its type matches the return type of `flatMap`.
 The following test asserts that `flatMap` applies the given function to each element
 of the stream it is called on and returns a new stream combining all elements of streams
 returned by the given function.
@@ -161,7 +159,7 @@ takes a stream as argument and returns it as result.
 
 ## Task: Reasoning
 
-Think about useful properties that can be used to manipulate or reason about
+Think about properties that can be used to manipulate or reason about
 expressions involving the presented combinators
 and write more tests to check these properties.
 Can you express some of the presented combinators using others
