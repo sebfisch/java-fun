@@ -246,8 +246,7 @@ Here is an alternative implementation of `fromExp` for `Bin` arguments
 that replaces the sequence of recursive calls with nested calls to `flatMap`
 for their results.
 
-```java
-@Override
+```java {lineos=table,hl_lines=[4,5]}
 public Optional<Integer> fromExp(Bin bin) {
   final BinOp op = bin.getOp();
   return
@@ -270,8 +269,7 @@ so we do not need to check them any more or use `get` to access their values.
 Next, we can use `filter` to sort out values that would lead to division by zero
 before calling `flatMap` for the `right` argument.
 
-```java
-@Override
+```java {lineos=table,hl_lines=[6]}
 public Optional<Integer> fromExp(Bin bin) {
   final BinOp op = bin.getOp();
   return
@@ -294,8 +292,7 @@ Calling `flatMap` and immediately creating an optional value in the passed funct
 is equivalent to calling `map` with a corresponding function
 that does not create an optional value.
 
-```java
-@Override
+```java {lineos=table,hl_lines=[7]}
 public Optional<Integer> fromExp(Bin bin) {
   final BinOp op = bin.getOp();
   return
