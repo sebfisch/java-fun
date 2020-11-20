@@ -11,7 +11,7 @@ Arithmetic expressions #  Arithmetic expressions come in different variants. We 
 Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/optionals/usage/" />
-<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
+<meta property="article:modified_time" content="2020-11-20T09:43:44+01:00" />
 <title>Using Optionals | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -211,7 +211,7 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li><a href="#arithmetic-expressions">Arithmetic expressions</a></li>
     <li><a href="#explicit-null-checks">Explicit <code>null</code> checks</a></li>
-    <li><a href="#naive-use-of-optionals">Naive use of optionals</a></li>
+    <li><a href="#naïve-use-of-optionals">Naïve use of optionals</a></li>
     <li><a href="#idiomatic-use-of-optionals">Idiomatic use of optionals</a>
       <ul>
         <li><a href="#flatmap-specializes-sequences"><code>flatMap</code> specializes sequences</a></li>
@@ -219,6 +219,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
       </ul>
     </li>
+    <li><a href="#task-refactoring-anti-patterns">Task: Refactoring Anti-Patterns</a></li>
   </ul>
 </nav>
 
@@ -381,9 +382,9 @@ it also implements explicit <code>null</code> checks for their results.</p>
 <p>Unfortunately, returning <code>null</code> when evaluating expressions
 is just as likely to cause a runtime exception down the road
 if callers are not aware of possibly missing results.</p>
-<h2 id="naive-use-of-optionals">
-  Naive use of optionals
-  <a class="anchor" href="#naive-use-of-optionals">#</a>
+<h2 id="naïve-use-of-optionals">
+  Naïve use of optionals
+  <a class="anchor" href="#na%c3%afve-use-of-optionals">#</a>
 </h2>
 <p>Our next evaluator replaces nullable integers with optional ones.
 Initially, the implementation mimics the previous version,
@@ -433,7 +434,8 @@ but can use <code>map</code>, <code>filter</code>, and <code>flatMap</code> inst
   <a class="anchor" href="#flatmap-specializes-sequences">#</a>
 </h3>
 <p>Here is an alternative implementation of <code>fromExp</code> for <code>Bin</code> arguments
-that replaces the sequence of recursive calls with nested calls to <code>flatMap</code>.</p>
+that replaces the sequence of recursive calls with nested calls to <code>flatMap</code>
+for their results.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
 <span style="color:#66d9ef">public</span> Optional<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
   <span style="color:#66d9ef">final</span> BinOp op <span style="color:#f92672">=</span> bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getOp</span><span style="color:#f92672">();</span>
@@ -471,7 +473,7 @@ and use it in the argument passed to <code>filter</code>.</p>
   <code>map</code> specializes <code>flatMap</code>
   <a class="anchor" href="#map-specializes-flatmap">#</a>
 </h3>
-<p>Finally, we can emply a useful property for reasoning about programs
+<p>Finally, we can employ a useful property for reasoning about programs
 involving optional combinators.
 Calling <code>flatMap</code> and immediately creating an optional value in the passed function
 is equivalent to calling <code>map</code> with a corresponding function
@@ -486,6 +488,16 @@ that does not create an optional value.</p>
       <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>right <span style="color:#f92672">-&gt;</span> op<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>left<span style="color:#f92672">,</span> right<span style="color:#f92672">)));</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><p>Here, the second call to <code>flatMap</code> has been replaced with a corresponding call to <code>map</code>.</p>
+<p>Guided by useful properties for reasoning about <code>map</code>, <code>filter</code>, and <code>flatMap</code>,
+we have transformed a naïve version of the <code>OptEvaluator</code>
+into another version that makes idiomatic use of optional combinators
+and avoids common anti-patterns.
+It is not only safer than the <code>NullEvaluator</code> based on explicit <code>null</code> checks
+but also shorter.</p>
+<h2 id="task-refactoring-anti-patterns">
+  Task: Refactoring Anti-Patterns
+  <a class="anchor" href="#task-refactoring-anti-patterns">#</a>
+</h2>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -534,7 +546,7 @@ by
   <ul>
     <li><a href="#arithmetic-expressions">Arithmetic expressions</a></li>
     <li><a href="#explicit-null-checks">Explicit <code>null</code> checks</a></li>
-    <li><a href="#naive-use-of-optionals">Naive use of optionals</a></li>
+    <li><a href="#naïve-use-of-optionals">Naïve use of optionals</a></li>
     <li><a href="#idiomatic-use-of-optionals">Idiomatic use of optionals</a>
       <ul>
         <li><a href="#flatmap-specializes-sequences"><code>flatMap</code> specializes sequences</a></li>
@@ -542,6 +554,7 @@ by
         <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
       </ul>
     </li>
+    <li><a href="#task-refactoring-anti-patterns">Task: Refactoring Anti-Patterns</a></li>
   </ul>
 </nav>
 

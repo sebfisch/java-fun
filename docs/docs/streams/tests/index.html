@@ -13,7 +13,7 @@ The map combinator #  The map combinator has the following signature1.
 &lt;R&gt; Stream&lt;R&gt; map(Function&lt;T,R&gt; function); It expects a Function as argument, which is itself a generic type with type parameters for the argument and result types. The argument type of the passed function needs to match the element type of the original stream." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/streams/tests/" />
-<meta property="article:modified_time" content="2020-11-18T13:44:49+01:00" />
+<meta property="article:modified_time" content="2020-11-20T09:43:44+01:00" />
 <title>Combinators in Isolation | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -270,7 +270,7 @@ and all results are collected in the new stream <code>result</code>.</p>
 in which order a given function is applied to the elements of a stream by <code>map</code>.
 In fact it might be applied in parallel depending on how the stream was created.
 All we can see is that the function is applied to each element uniformly
-rather than one element at a time.</p>
+not necessarily one element at a time.</p>
 <h2 id="the-filter-combinator">
   The <code>filter</code> combinator
   <a class="anchor" href="#the-filter-combinator">#</a>
@@ -300,8 +300,8 @@ instance of an anonymous class.</p>
   <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><p>The <code>test</code> method is applied to each string in the stream <code>words</code>
-and those strings where <code>test</code> returns <code>true</code> are collected in the new stream <code>result</code>.</p>
-<p>The given predicate is applied uniformly to the elements of a stream by <code>filter</code>,
+and those strings where <code>test</code> returns <code>true</code> are collected in the new stream <code>result</code>.
+In general, the given predicate is applied uniformly to the elements of a stream by <code>filter</code>,
 not necessarily one at a time, and possibly in parallel.</p>
 <h2 id="the-flatmap-combinator">
   The <code>flatMap</code> combinator
@@ -311,9 +311,8 @@ not necessarily one at a time, and possibly in parallel.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
 </code></pre></div><p>It expects a function as argument where the argument type needs to match
 the element type of the original stream.
-The result type of the function passed as argument to <code>flatMap</code>
-needs to be a stream itself, and the corresponding element type
-matches the element type of the returned stream.
+The result of the function passed as argument to <code>flatMap</code> needs to be a stream itself,
+and its type matches the return type of <code>flatMap</code>.
 The following test asserts that <code>flatMap</code> applies the given function to each element
 of the stream it is called on and returns a new stream combining all elements of streams
 returned by the given function.</p>
@@ -347,7 +346,7 @@ takes a stream as argument and returns it as result.</p>
   Task: Reasoning
   <a class="anchor" href="#task-reasoning">#</a>
 </h2>
-<p>Think about useful properties that can be used to manipulate or reason about
+<p>Think about properties that can be used to manipulate or reason about
 expressions involving the presented combinators
 and write more tests to check these properties.
 Can you express some of the presented combinators using others
