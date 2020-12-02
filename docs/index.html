@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Functional Patterns in Java #   Conventional programming languages are growing ever more enormous, but not stronger.
- In his Turing-Award lecture in 1978, John Backus asked: Can programming be liberated from the von Neumann style? He gave a damning report on the state of conventional programming languages at the time.
+ In his Turing-Award lecture in 1977, John Backus asked: Can programming be liberated from the von Neumann style? He gave a damning report on the state of conventional programming languages at the time.
  Inherent defects at the most basic level cause them to be both fat and weak: their primitive word-at-a-time style of programming inherited from their common ancestor—the von Neumann computer, their close coupling of semantics to state transitions, their division of programming into a world of expressions and a world of statements, their inability to effectively use powerful combining forms for building new programs from existing ones, and their lack of useful mathematical properties for reasoning about programs.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Functional Patterns in Java" />
 <meta property="og:description" content="" />
@@ -150,6 +150,63 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/" class="">Parsers</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/definition/" class="">Defining Complex Parsers</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" class="">Implementing Combinators</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
   
 
@@ -226,7 +283,7 @@ https://github.com/alex-shpak/hugo-book
 <blockquote>
 <p>Conventional programming languages are growing <em>ever more enormous, but not stronger</em>.</p>
 </blockquote>
-<p>In his Turing-Award lecture in 1978,
+<p>In his Turing-Award lecture in 1977,
 <a href="https://en.wikipedia.org/wiki/John_Backus">John Backus</a>
 asked:
 <a href="https://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf">Can programming be liberated from the von Neumann style?</a>
@@ -273,7 +330,7 @@ can be used to manipulate combined expressions, including those containing funct
 that are particularly prevalent: <code>map</code>, <code>filter</code>, and <code>flatMap</code>.
 All of them are provided for different types by Java&rsquo;s standard library.
 We will discuss how to use them for <a href="docs/streams/">Streams</a> and <a href="docs/optionals/">Optionals</a> and then
-implement our own types providing these combinators.</p>
+implement our own type providing these combinators.</p>
 <p>The underlying source code is available online,
 and this tutorial includes tasks to extend it.
 If you want to follow along, you can use your own Java development environment
@@ -285,12 +342,14 @@ with the
 <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Development Extension Pack</a>
 to use a predefined environment without creating (or adjusting) your own.
 To use the predefined environment in VS Code
+download and unpack the
+<a href="https://github.com/sebfisch/java-fun-code/archive/main.zip">source code</a>
+(or clone the
+<a href="https://github.com/sebfisch/java-fun-code">repository</a>
+using <code>git</code>),
+open the repository folder in VS Code,
 click on the Remote Containers icon in the bottom-left corner,
-select <em>Clone Repository in Container Volume</em>,
-and provide the URL of the accompanying source code repository.
-Alternatively, you can use <code>git</code> to clone the repository,
-open the corresponding folder in VS Code,
-and then select <em>Reopen Folder in Container</em>.</p>
+and select <em>Reopen Folder in Container</em>.</p>
 </article>
  
       

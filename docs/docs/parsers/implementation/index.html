@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Implementing Combinators #  Until now we have seen three examples of types implementing map, filter, and flatMap combinators that can be used to define complex programs based on simpler ones. We have also seen useful properties of these combinators that can be used to reason about the meaning of programs. Some of these properties were valid regardless of the concrete type they are implemented for. As such, they help form intuitions about the meaning of those combinators that is independent of concrete types.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Implementing Combinators" />
+<meta property="og:description" content="Implementing Combinators #  Until now we have seen three examples of types implementing map, filter, and flatMap combinators that can be used to define complex programs based on simpler ones. We have also seen useful properties of these combinators that can be used to reason about the meaning of programs. Some of these properties were valid regardless of the concrete type they are implemented for. As such, they help form intuitions about the meaning of those combinators that is independent of concrete types." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" />
+
+<title>Implementing Combinators | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/" class="">Parsers</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/definition/" class="">Defining Complex Parsers</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" class=" active">Implementing Combinators</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Implementing Combinators</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#parsers-are-functions">Parsers are functions</a></li>
+    <li><a href="#basic-parsers">Basic parsers</a></li>
+    <li><a href="#parser-combinators">Parser combinators</a></li>
+    <li><a href="#task-add-combinators">Task: Add combinators</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="implementing-combinators">
+  Implementing Combinators
+  <a class="anchor" href="#implementing-combinators">#</a>
+</h1>
+<p>Until now we have seen three examples of types implementing
+<code>map</code>, <code>filter</code>, and <code>flatMap</code> combinators
+that can be used to define complex programs based on simpler ones.
+We have also seen useful properties of these combinators
+that can be used to reason about the meaning of programs.
+Some of these properties were valid regardless of the concrete type they are implemented for.
+As such, they help form intuitions about the meaning of those combinators
+that is independent of concrete types.</p>
+<p>We will now implement the parser combinators with such properties in mind.
+More specifically, we have observed that both <code>map</code> and <code>filter</code> are special cases of <code>flatMap</code>
+for different types.
+We will make use of this insight by implementing <code>map</code> and <code>filter</code> in terms of <code>flatMap</code>
+making sure that the mentioned properties hold for parsers by definition.</p>
+<p>In order to focus on the essentials,
+our implementation does not concern itself with orthogonal issues
+such as information hiding.
+This tutorial is meant to convey the essence of the implementation
+and explicitly not meant to provide an implementation ready for development in production.
+A production ready implementation for parser combinators in Java
+would be an interersting project, which is, however, out of scope for this tutorial.</p>
+<h2 id="parsers-are-functions">
+  Parsers are functions
+  <a class="anchor" href="#parsers-are-functions">#</a>
+</h2>
+<p>A parser is a function that transforms text into structured data.
+In order to implement sequential parsing,
+we need to be able to compute intermediate results
+along with remaining input that is still to be processed.
+In order to implement alternative parsing,
+we need to be able to handle different possibilities
+for combinations of intermediate results with remaining input.</p>
+<p>We implement parsers as a
+<a href="https://docs.oracle.com/javase/specs/jls/se14/html/jls-9.html#jls-9.8">functional interface</a>
+as follows.
+The advantage of this representation is that we can write parsers concisely as
+<a href="https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">lambda expressions</a>
+instead of anonymous classes when implementing the combinators.
+A disadvantage of this representation is that we cannot hide
+the method used to compute intermediate results.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@FunctionalInterface</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Parser</span><span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Result</span><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> R result<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">final</span> String remainingInput<span style="color:#f92672">;</span>
+    Result<span style="color:#f92672">(</span>R result<span style="color:#f92672">,</span> String remainingInput<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span>
+      <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">remainingInput</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>remainingInput<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
+
+  Stream<span style="color:#f92672">&lt;</span>Result<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">intermediateResults</span><span style="color:#f92672">(</span>String input<span style="color:#f92672">);</span>
+  
+  <span style="color:#75715e">// to be continued
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>The class <code>Parser.Result</code> is a generic type
+combining an intermediate result of type <code>R</code> with remaining input.</p>
+<p>By returning a stream of intermediate results including remaining input,
+the method <code>intermediateResults</code> allows us to implement combinators
+for sequential as well as alternative parsing.
+When using parsers, we have used a simpler method <code>results</code>
+which is implemented in terms of <code>intermediateResults</code> as follows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">default</span> Stream<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>String input<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> intermediateResults<span style="color:#f92672">(</span>input<span style="color:#f92672">)</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>res <span style="color:#f92672">-&gt;</span> res<span style="color:#f92672">.</span><span style="color:#a6e22e">remainingInput</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">())</span>
+      <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>res <span style="color:#f92672">-&gt;</span> res<span style="color:#f92672">.</span><span style="color:#a6e22e">result</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>For the sake of simplicity, we provide a
+<a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">default implementation</a>
+directly inside the <code>Parser</code> interface
+instead of defining a class implementing the interface.</p>
+<h2 id="basic-parsers">
+  Basic parsers
+  <a class="anchor" href="#basic-parsers">#</a>
+</h2>
+<p>Basic parsers can be implemented as static methods in the <code>Parser</code> interface.
+The simplest example is the <code>failure</code> method
+which returns a parser that produces no results.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">failure</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> input <span style="color:#f92672">-&gt;</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The lambda expression used in the <code>return</code> statement
+matches the method <code>intermediateResults</code>
+which is the only (non-default) method of the functional interface <code>Parser</code>.
+It is transflated by the Java compiler into the following instance of an anonymous class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">new</span> Parser<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+  <span style="color:#a6e22e">@Override</span>
+  Stream<span style="color:#f92672">&lt;</span>Result<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">intermediateResults</span><span style="color:#f92672">(</span>String input<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">();</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>We will continue to use lambda expressions to define parsers
+but stop to mention anonymous classes they translate to.</p>
+<p>The next basic parser does not consume any input
+and produces the result given as argument.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>R result<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> input <span style="color:#f92672">-&gt;</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Result<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;(</span>result<span style="color:#f92672">,</span> input<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The created stream contains a single intermediate result
+along with the complete input provided to the parser
+meaning that the complete input will be provided to subsequent parsers
+if there are any.</p>
+<p>The next basic parser is the first to consume some input.
+It consumes exactly one character
+which is also produced as result
+and passes on the rest of the input to subsequent parsers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> Parser<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">forChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> input <span style="color:#f92672">-&gt;</span> input<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">()</span>
+      <span style="color:#f92672">?</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">()</span>
+      <span style="color:#f92672">:</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Result<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;(</span>input<span style="color:#f92672">.</span><span style="color:#a6e22e">charAt</span><span style="color:#f92672">(</span>0<span style="color:#f92672">),</span> input<span style="color:#f92672">.</span><span style="color:#a6e22e">substring</span><span style="color:#f92672">(</span>1<span style="color:#f92672">)));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>If the provided input is empty the created parser fails
+by returning an empty stream of results.</p>
+<p>Our final basic parser can be defined in terms of other combinators and basic parsers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Predicate<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> predicate<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span>
+  Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>predicate<span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span>
+  forString<span style="color:#f92672">(</span>predicate<span style="color:#f92672">).</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>str <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">+</span> str<span style="color:#f92672">)</span>
+  <span style="color:#f92672">).</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>It is implemented as alternative between</p>
+<ul>
+<li>a parser consuming non-empty strings of characters satisfying the given predicate<br>
+and producing them as result</li>
+<li>and a parser producing the empty string without consuming any input.</li>
+</ul>
+<p>The definition is recursive:
+the non-empty case is a sequence of a parser for a single character
+followed by a parser for the remaining string created with a recursive call.</p>
+<h2 id="parser-combinators">
+  Parser combinators
+  <a class="anchor" href="#parser-combinators">#</a>
+</h2>
+<p>Parser combinators create more complex parsers based on simpler ones.
+We implement them as methods with default implementations for the <code>Parser</code> interface
+starting with the implementation of the <code>or</code> combinator for alternative parsing.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">default</span> Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> parser<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> input <span style="color:#f92672">-&gt;</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">concat</span><span style="color:#f92672">(</span>
+      intermediateResults<span style="color:#f92672">(</span>input<span style="color:#f92672">),</span>
+      parser<span style="color:#f92672">.</span><span style="color:#a6e22e">intermediateResults</span><span style="color:#f92672">(</span>input<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The input provided to the returned parser
+is passed on to the original parser as well as to the parser passed as argument.
+The results of both parsers are collected into a single stream.
+If one parser fails, the results of the other are produced.
+If both parsers succeed, the resulting parser produces multiple results.</p>
+<p>Next we implement <code>flatMap</code> for sequential parsing.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">default</span> <span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">,</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> input <span style="color:#f92672">-&gt;</span> intermediateResults<span style="color:#f92672">(</span>input<span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>parsed <span style="color:#f92672">-&gt;</span> <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>  function<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>parsed<span style="color:#f92672">.</span><span style="color:#a6e22e">result</span><span style="color:#f92672">).</span><span style="color:#a6e22e">intermediateResults</span><span style="color:#f92672">(</span>parsed<span style="color:#f92672">.</span><span style="color:#a6e22e">remainingInput</span><span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>This implementation computes intermediate results based on the original parser,
+applies the given function to each parsed result,
+passes the remaining input to the resulting parsers,
+and collects the results of those calls into a single stream.</p>
+<p>The remaining combinators <code>map</code> and filter are implemented
+in terms of <code>flatMap</code> and basic combinators
+based on properties of those combinators observed previously.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">default</span> <span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">,</span> B<span style="color:#f92672">&gt;</span> function<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> flatMap<span style="color:#f92672">(</span>result <span style="color:#f92672">-&gt;</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>function<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>result<span style="color:#f92672">)));</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">default</span> Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Predicate<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> predicate<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">return</span> flatMap<span style="color:#f92672">(</span>result <span style="color:#f92672">-&gt;</span>
+  predicate<span style="color:#f92672">.</span><span style="color:#a6e22e">test</span><span style="color:#f92672">(</span>result<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>result<span style="color:#f92672">)</span> <span style="color:#f92672">:</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">failure</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="task-add-combinators">
+  Task: Add combinators
+  <a class="anchor" href="#task-add-combinators">#</a>
+</h2>
+<p>Add combinators with the following signatures to the <code>Parser</code> interface.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Parser<span style="color:#f92672">&lt;</span>Optional<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">optional</span><span style="color:#f92672">()</span>
+Parser<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">list</span><span style="color:#f92672">()</span>
+</code></pre></div><p>Define the combinators in terms of existing ones
+without using <code>intermediateResults</code> directly.
+Write tests documenting the behaviour of the new combinators.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#parsers-are-functions">Parsers are functions</a></li>
+    <li><a href="#basic-parsers">Basic parsers</a></li>
+    <li><a href="#parser-combinators">Parser combinators</a></li>
+    <li><a href="#task-add-combinators">Task: Add combinators</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

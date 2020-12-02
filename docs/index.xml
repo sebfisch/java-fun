@@ -48,5 +48,35 @@ The map combinator #  The map combinator has the following signature1.
 Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp.</description>
     </item>
     
+    <item>
+      <title>Combinators in Isolation</title>
+      <link>http://sebfisch.github.io/java-fun/docs/parsers/tests/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/parsers/tests/</guid>
+      <description>Combinators in Isolation #  Parsers are instances of the generic type Parser&amp;lt;A&amp;gt; which has a type parameter A for the type of produced results. Like streams and optionals, parsers also provide implementations for the combinators map, filter and flatMap. Before we observe how to combine parsers, hoewever, we first look at how to create basic parsers.
+Basic parsers #  Basic parsers differ in how much input they consume as well as what result they produce.</description>
+    </item>
+    
+    <item>
+      <title>Defining Complex Parsers</title>
+      <link>http://sebfisch.github.io/java-fun/docs/parsers/definition/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/parsers/definition/</guid>
+      <description>Defining Complex Parsers #  We will now use parser combinators to define a more realistic example of a parser.
+Kate&amp;rsquo;s Grammar Tool includes a famous grammar for arithmetic expressions as well as a corresponding railroad diagram:
+Tests for our parser #  The diagram contains several named parts which together describe the syntax of arithmetic expressions. An interesting property of this description is that the structure of the rules follows the usual precedence rules of addition and multiplication: when parsing an expression based on this diagram the rules will be nested correctly even without corresponding parentheses.</description>
+    </item>
+    
+    <item>
+      <title>Implementing Combinators</title>
+      <link>http://sebfisch.github.io/java-fun/docs/parsers/implementation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sebfisch.github.io/java-fun/docs/parsers/implementation/</guid>
+      <description>Implementing Combinators #  Until now we have seen three examples of types implementing map, filter, and flatMap combinators that can be used to define complex programs based on simpler ones. We have also seen useful properties of these combinators that can be used to reason about the meaning of programs. Some of these properties were valid regardless of the concrete type they are implemented for. As such, they help form intuitions about the meaning of those combinators that is independent of concrete types.</description>
+    </item>
+    
   </channel>
 </rss>

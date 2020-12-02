@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Combinators in Isolation #  Parsers are instances of the generic type Parser&lt;A&gt; which has a type parameter A for the type of produced results. Like streams and optionals, parsers also provide implementations for the combinators map, filter and flatMap. Before we observe how to combine parsers, hoewever, we first look at how to create basic parsers.
+Basic parsers #  Basic parsers differ in how much input they consume as well as what result they produce.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Combinators in Isolation" />
+<meta property="og:description" content="Combinators in Isolation #  Parsers are instances of the generic type Parser&lt;A&gt; which has a type parameter A for the type of produced results. Like streams and optionals, parsers also provide implementations for the combinators map, filter and flatMap. Before we observe how to combine parsers, hoewever, we first look at how to create basic parsers.
+Basic parsers #  Basic parsers differ in how much input they consume as well as what result they produce." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/parsers/tests/" />
+
+<title>Combinators in Isolation | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/" class="">Parsers</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/tests/" class=" active">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/definition/" class="">Defining Complex Parsers</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" class="">Implementing Combinators</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Combinators in Isolation</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#basic-parsers">Basic parsers</a>
+      <ul>
+        <li><a href="#single-characters">Single characters</a></li>
+        <li><a href="#multiple-characters">Multiple characters</a></li>
+        <li><a href="#parsing-failure">Parsing failure</a></li>
+        <li><a href="#explicit-results">Explicit results</a></li>
+      </ul>
+    </li>
+    <li><a href="#complex-parsers">Complex parsers</a>
+      <ul>
+        <li><a href="#adjusting-results-with-map">Adjusting results with <code>map</code></a></li>
+        <li><a href="#restricting-results-with-filter">Restricting results with <code>filter</code></a></li>
+        <li><a href="#sequencial-parsers-with-flatmap">Sequencial parsers with <code>flatMap</code></a></li>
+        <li><a href="#alternative-parsers-with-or">Alternative parsers with <code>or</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#tasks">Tasks</a>
+      <ul>
+        <li><a href="#ambiguous-parsers">Ambiguous parsers</a></li>
+        <li><a href="#reasoning">Reasoning</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="combinators-in-isolation">
+  Combinators in Isolation
+  <a class="anchor" href="#combinators-in-isolation">#</a>
+</h1>
+<p>Parsers are instances of the
+<a href="https://docs.oracle.com/javase/tutorial/java/generics/types.html">generic type</a>
+<code>Parser&lt;A&gt;</code> which has a type parameter <code>A</code> for the type of produced results.
+Like streams and optionals,
+parsers also provide implementations for the combinators
+<code>map</code>, <code>filter</code> and <code>flatMap</code>.
+Before we observe how to combine parsers, hoewever,
+we first look at how to create basic parsers.</p>
+<h2 id="basic-parsers">
+  Basic parsers
+  <a class="anchor" href="#basic-parsers">#</a>
+</h2>
+<p>Basic parsers differ in how much input they consume
+as well as what result they produce.</p>
+<h3 id="single-characters">
+  Single characters
+  <a class="anchor" href="#single-characters">#</a>
+</h3>
+<p>The static method <code>Parser.forChar</code> creates a parser for a single character
+of type <code>Parser&lt;Character&gt;</code>.
+The following test asserts than
+the created parser consumes exactly one character from the input
+which is also the result it produces.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForCharYieldsFirstInputChar</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Character character <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;X&#39;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> character<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>character<span style="color:#f92672">),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>This test uses the method <code>results</code>,
+which returns a stream of possible results
+the parser can produce when consuming the given input.
+Often the stream will contain exactly one result.
+It may contain more if the parser is ambiguous
+or no result at all if parsing fails (see below.)</p>
+<h3 id="multiple-characters">
+  Multiple characters
+  <a class="anchor" href="#multiple-characters">#</a>
+</h3>
+<p>The static method <code>Parser.forString</code> creates a parser of type <code>Parser&lt;String&gt;</code>.
+It takes a predicate of type <code>Predicate&lt;Character&gt;</code> as argument
+and consumes characters from the input as long as they satifsy the given predicate.
+The following test asserts that the resulting parser produces the consumed string.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForStringYieldsMatchingInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>input<span style="color:#f92672">),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Like in the previous test the input matches what the parser expects.</p>
+<h3 id="parsing-failure">
+  Parsing failure
+  <a class="anchor" href="#parsing-failure">#</a>
+</h3>
+<p>Parsers can fail if there is insufficient input or
+if there is additional unrecognized input.
+The following test asserts that
+a parsers for letters cannot parse digits.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForLettersFailsOnDigits</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;0815&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">(),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The static method <code>Parser.failure</code> creates a parser
+that does not consume any input
+and also does not produces a result.
+The following tests assert that the created pasers fail
+regardless of the given input.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFailingParserFailsForEmptyInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">failure</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">(),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFailingParserFailsForNonEmptyInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">failure</span><span style="color:#f92672">();</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;X&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">(),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Parsers that always fail do not seem very useful on their own.
+However, they are sometimes handy to create complex parsers from simpler ones.</p>
+<h3 id="explicit-results">
+  Explicit results
+  <a class="anchor" href="#explicit-results">#</a>
+</h3>
+<p>The static method <code>Parser.of</code> also creates a parser that does not consume any input.
+It takes an argument which is produced by the resulting parser.
+The following test asserts that the result is produced without reading any input.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserOfGivenResultSucceedsOnEmptyInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Integer number <span style="color:#f92672">=</span> 42<span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>number<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Stream<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> results <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>number<span style="color:#f92672">),</span> results<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Again, such parsers are not useful on their own
+but will be handy to create complex parsers from simpler ones.</p>
+<h2 id="complex-parsers">
+  Complex parsers
+  <a class="anchor" href="#complex-parsers">#</a>
+</h2>
+<p>The combinators <code>map</code>, <code>fiter</code>, and <code>flatMap</code> can be used
+to create complex parsers from simpler ones.
+We will also see the <code>or</code> combinator that we have not discussed before.</p>
+<h3 id="adjusting-results-with-map">
+  Adjusting results with <code>map</code>
+  <a class="anchor" href="#adjusting-results-with-map">#</a>
+</h3>
+<p>The signature of the <code>map</code> combinator for parsers
+resembles the <code>map</code> signatures we have seen for other types.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">,</span> B<span style="color:#f92672">&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>The method returns a parser of type <code>Parser&lt;B&gt;</code>
+when called on a parser of type <code>Parser&lt;A&gt;</code>
+with an approriate function as argument.
+The following test asserts that <code>map</code> can be used to adjust the result of a parser.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatMapAdjustsResultOfParser</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> adjusted <span style="color:#f92672">=</span> parser<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>String<span style="color:#f92672">::</span>length<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>5<span style="color:#f92672">),</span> adjusted<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="restricting-results-with-filter">
+  Restricting results with <code>filter</code>
+  <a class="anchor" href="#restricting-results-with-filter">#</a>
+</h3>
+<p>The signature of the <code>filter</code> combinator for parsers
+resembles the <code>filter</code> signatures we have seen for other types.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Predicate<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> predicate<span style="color:#f92672">);</span>
+</code></pre></div><p>The method returns a new parser with the same type as the one it is called on.
+However, the resulting parser produces only those results of the original parser
+that satisfy the given predicate and fails for other results.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForDigitYieldsInputDigit</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Character digit <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;7&#39;</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isDigit<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>digit<span style="color:#f92672">),</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>digit<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">()));</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForDigitFailsForNonDigitInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isDigit<span style="color:#f92672">);</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">(),</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;X&#34;</span><span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="sequencial-parsers-with-flatmap">
+  Sequencial parsers with <code>flatMap</code>
+  <a class="anchor" href="#sequencial-parsers-with-flatmap">#</a>
+</h3>
+<p>The signature of the <code>flatMap</code> combinator for parsers
+resembles the <code>flatMap</code> signatures we have seen for other types.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">,</span> Parser<span style="color:#f92672">&lt;</span>B<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
+</code></pre></div><p>The resulting parser first consumes input according to the parser it is called on
+and then consumes more input according the parser returned by the given function.
+The result produced by the second parser is also the result produced by the
+parser returned by <code>flatMap</code>.
+The following test asserts that parsers can be sequenced using <code>flatMap</code>
+and results can be combined by adjusting the result of the second parser.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatSequentialParserCanCombineResults</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> digits <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isDigit<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> letters <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> digitsAndLetters <span style="color:#f92672">=</span> <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>      digits<span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>ds <span style="color:#f92672">-&gt;</span> letters<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>ls <span style="color:#f92672">-&gt;</span> ds <span style="color:#f92672">+</span> ls<span style="color:#f92672">));</span>
+  <span style="color:#66d9ef">final</span> String input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;12abc&#34;</span><span style="color:#f92672">;</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>input<span style="color:#f92672">),</span> digitsAndLetters<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="alternative-parsers-with-or">
+  Alternative parsers with <code>or</code>
+  <a class="anchor" href="#alternative-parsers-with-or">#</a>
+</h3>
+<p>The <code>or</code> combinator has the following signature.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>Parser<span style="color:#f92672">&lt;</span>A<span style="color:#f92672">&gt;</span> parser<span style="color:#f92672">);</span>
+</code></pre></div><p>The method can be called on a parser of type <code>Parser&lt;A&gt;</code>
+and returns a parser of the same type.
+The resulting parser consumes input according to the parser the method is called on
+or according to the parser provided as argument.
+The produced result is the result produced by the successful parser.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForDigitsOrLettersParsesEitherButFailsOnBoth</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> digits <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isDigit<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> letters <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
+  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> digitsOrLetters <span style="color:#f92672">=</span> digits<span style="color:#f92672">.</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>letters<span style="color:#f92672">);</span>
+
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;12&#34;</span><span style="color:#f92672">),</span> digitsOrLetters<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;12&#34;</span><span style="color:#f92672">));</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">),</span> digitsOrLetters<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">));</span>
+  assertStreamEquals<span style="color:#f92672">(</span>Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">empty</span><span style="color:#f92672">(),</span> digitsOrLetters<span style="color:#f92672">.</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;12abc&#34;</span><span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="tasks">
+  Tasks
+  <a class="anchor" href="#tasks">#</a>
+</h2>
+<h3 id="ambiguous-parsers">
+  Ambiguous parsers
+  <a class="anchor" href="#ambiguous-parsers">#</a>
+</h3>
+<p>Some parsers can consume their inputs in more than one way
+and as a consequence produce more than one result.
+A simple example would be a parser that is combined with itself using <code>or</code>.
+Another, more subtle, example would be a sequential parser
+whose parts can be combined in different ways to parse given input.</p>
+<p>Write at least two more tests for parsers
+documenting the behaviour of alternative and sequential parsers
+with more than one result.</p>
+<h3 id="reasoning">
+  Reasoning
+  <a class="anchor" href="#reasoning">#</a>
+</h3>
+<p>Can you spot a connection between the <code>or</code> combinator for parsers
+and the corresponding logic operation on boolean values?
+Write another test to document such a connection.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#basic-parsers">Basic parsers</a>
+      <ul>
+        <li><a href="#single-characters">Single characters</a></li>
+        <li><a href="#multiple-characters">Multiple characters</a></li>
+        <li><a href="#parsing-failure">Parsing failure</a></li>
+        <li><a href="#explicit-results">Explicit results</a></li>
+      </ul>
+    </li>
+    <li><a href="#complex-parsers">Complex parsers</a>
+      <ul>
+        <li><a href="#adjusting-results-with-map">Adjusting results with <code>map</code></a></li>
+        <li><a href="#restricting-results-with-filter">Restricting results with <code>filter</code></a></li>
+        <li><a href="#sequencial-parsers-with-flatmap">Sequencial parsers with <code>flatMap</code></a></li>
+        <li><a href="#alternative-parsers-with-or">Alternative parsers with <code>or</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#tasks">Tasks</a>
+      <ul>
+        <li><a href="#ambiguous-parsers">Ambiguous parsers</a></li>
+        <li><a href="#reasoning">Reasoning</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

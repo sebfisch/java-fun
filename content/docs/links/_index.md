@@ -29,4 +29,8 @@ in order of appearance.
   * [Optional API](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/Optional.html)
   * [double dispatch](https://en.wikipedia.org/wiki/Double_dispatch)
   * [default implementation](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
+  * [Turing Award](https://en.wikipedia.org/wiki/Turing_Award)
+  * [Backus-Naur form (BNF)](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
+  * [railroad diagram](https://en.wikipedia.org/wiki/Syntax_diagram)
+  * [Kate's Grammar Tool](https://github.com/katef/kgt)
 

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Defining Complex Parsers #  We will now use parser combinators to define a more realistic example of a parser.
+Kate&rsquo;s Grammar Tool includes a famous grammar for arithmetic expressions as well as a corresponding railroad diagram:
+Tests for our parser #  The diagram contains several named parts which together describe the syntax of arithmetic expressions. An interesting property of this description is that the structure of the rules follows the usual precedence rules of addition and multiplication: when parsing an expression based on this diagram the rules will be nested correctly even without corresponding parentheses.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Defining Complex Parsers" />
+<meta property="og:description" content="Defining Complex Parsers #  We will now use parser combinators to define a more realistic example of a parser.
+Kate&rsquo;s Grammar Tool includes a famous grammar for arithmetic expressions as well as a corresponding railroad diagram:
+Tests for our parser #  The diagram contains several named parts which together describe the syntax of arithmetic expressions. An interesting property of this description is that the structure of the rules follows the usual precedence rules of addition and multiplication: when parsing an expression based on this diagram the rules will be nested correctly even without corresponding parentheses." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/parsers/definition/" />
+
+<title>Defining Complex Parsers | Java Fun</title>
+<link rel="manifest" href="/java-fun/manifest.json">
+<link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/java-fun/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY="><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/java-fun"><span>Java Fun</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/" class="">Streams</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/streams/practice/" class="">Streams in Practice</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/" class="">Optionals</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/optionals/usage/" class="">Using Optionals</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/" class="">Parsers</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/definition/" class=" active">Defining Complex Parsers</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" class="">Implementing Combinators</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/java-fun/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Defining Complex Parsers</strong>
+
+  <label for="toc-control">
+    
+    <img src="/java-fun/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#tests-for-our-parser">Tests for our parser</a></li>
+    <li><a href="#parser-definitions">Parser definitions</a>
+      <ul>
+        <li><a href="#integer-parsers">Integer parsers</a></li>
+        <li><a href="#expression-parsers">Expression parsers</a></li>
+      </ul>
+    </li>
+    <li><a href="#tasks">Tasks</a>
+      <ul>
+        <li><a href="#generalized-operator-parsing">Generalized operator parsing</a></li>
+        <li><a href="#interactive-evaluation">Interactive evaluation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="defining-complex-parsers">
+  Defining Complex Parsers
+  <a class="anchor" href="#defining-complex-parsers">#</a>
+</h1>
+<p>We will now use parser combinators to define a more realistic example of a parser.</p>
+<p><a href="https://github.com/katef/kgt">Kate&rsquo;s Grammar Tool</a>
+includes a famous grammar for arithmetic expressions
+as well as a corresponding railroad diagram:</p>
+<p><img src="../expr.svg" alt="Railroad Diagram for Language of Arithmetic Expressions" /></p>
+<h2 id="tests-for-our-parser">
+  Tests for our parser
+  <a class="anchor" href="#tests-for-our-parser">#</a>
+</h2>
+<p>The diagram contains several named parts which together describe
+the syntax of arithmetic expressions.
+An interesting property of this description is that
+the structure of the rules follows the usual precedence rules
+of addition and multiplication:
+when parsing an expression based on this diagram
+the rules will be nested correctly even without corresponding parentheses.
+The following tests demonstrate how a parser corresponding to the above railroad diagram
+parses its input.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testRightNested</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  assertEquals<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;(3 + (4 * 5))&#34;</span><span style="color:#f92672">,</span> EXP<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;3+4*5&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testLeftNested</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  assertEquals<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;((3 * 4) + 5)&#34;</span><span style="color:#f92672">,</span> EXP<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;3*4+5&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testExplicitlyRightNested</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  assertEquals<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;(3 * (4 + 5))&#34;</span><span style="color:#f92672">,</span> EXP<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;3*(4+5)&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Test</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testExplicitlyLeftNested</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  assertEquals<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;((3 + 4) * 5)&#34;</span><span style="color:#f92672">,</span> EXP<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;(3+4)*5&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Here, <code>EXP</code> is an instance of the class <code>ExpParser</code> defined below.
+The method <code>parse</code> returns an instance of the interface <code>Exp</code>
+defined previously for representing arithmetic expressions.
+The method <code>toString</code> for <code>Exp</code> instances
+returns a fully parenthezised representation of the expression it is called on.</p>
+<h2 id="parser-definitions">
+  Parser definitions
+  <a class="anchor" href="#parser-definitions">#</a>
+</h2>
+<p>To implement a parser corresponding to the above railroad diagram
+we define the following class.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExpParser</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> Exp <span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> String input<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> expr<span style="color:#f92672">().</span><span style="color:#a6e22e">results</span><span style="color:#f92672">(</span>input<span style="color:#f92672">).</span><span style="color:#a6e22e">findFirst</span><span style="color:#f92672">()</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">orElseThrow</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">new</span> RuntimeException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;parse error for: &#34;</span> <span style="color:#f92672">+</span> input<span style="color:#f92672">));</span>
+  <span style="color:#f92672">}</span>
+  <span style="color:#75715e">// to be continued
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>The method <code>expr</code> defined below returns a parser of type <code>Parser&lt;Exp&gt;</code>.
+On the resulting parser, the <code>results</code> method is used to compute
+a stream of produced results for the given input,
+and <code>findFirst</code> is called on the resulting stream
+to retrieve the first result as an optional value.
+If the parser fails and no result is produced
+then the <code>parse</code> method throws a parse error
+in the form of a runtime exception.</p>
+<h3 id="integer-parsers">
+  Integer parsers
+  <a class="anchor" href="#integer-parsers">#</a>
+</h3>
+<p>The railroad diagram refers to the name <code>integer</code> without
+explaining further how integers are represented.
+Before we implement the diagram using parser combinators,
+we first define parsers for a simple representation of integers
+to be used later.
+The parser <code>DIGITS</code> can be used to parse positive integers
+represented as a non-empty string of digits.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> DIGITS <span style="color:#f92672">=</span>
+    Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isDigit<span style="color:#f92672">)</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>digits <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">!</span>digits<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">())</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">::</span>parseInt<span style="color:#f92672">);</span>
+</code></pre></div><p>A parser for possibly negative integers
+can be defined in terms of <code>DIGITS</code> as follow.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// &lt;integer&gt; ::= &#34;-&#34; &lt;digits&gt; | &lt;digits&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> INTEGER <span style="color:#f92672">=</span>                  <span style="color:#75715e">// &lt;integer&gt; ::=
+</span><span style="color:#75715e"></span>    Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>_sign <span style="color:#f92672">-&gt;</span> <span style="color:#75715e">// &#34;-&#34;
+</span><span style="color:#75715e"></span>    DIGITS<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>n <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">-</span>n<span style="color:#f92672">)</span>                                         <span style="color:#75715e">// &lt;digits&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">).</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>DIGITS<span style="color:#f92672">);</span>                                               <span style="color:#75715e">// | &lt;digits&gt;
+</span></code></pre></div><p>The <code>INTEGER</code> parser is defined using <code>or</code> as an alternative between
+a sequential parser for a minus sign followed by digits as one alternative
+and digits without a sign as second alternative.
+The <code>map</code> combinator is used to negate the result of the first occurrence of <code>DIGITS</code>
+following the minus sign.</p>
+<h3 id="expression-parsers">
+  Expression parsers
+  <a class="anchor" href="#expression-parsers">#</a>
+</h3>
+<p>We are now ready to translate the railroad diagram into parsers.
+Each rule will be translated into a parser that produces and <code>Exp</code> instance.
+The simplest case is the rule for <code>const</code> which we can express
+by adjusting the result of the <code>INTEGER</code> parser as follows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// &lt;const&gt; ::= &lt;integer&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> CONST <span style="color:#f92672">=</span> INTEGER<span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Num<span style="color:#f92672">::</span><span style="color:#66d9ef">new</span><span style="color:#f92672">);</span>
+</code></pre></div><p>The remaining rules all have a similar structure:
+they consist of alternative branches
+where the first branch is a sequential parser.
+We can expect to use <code>flatMap</code> for the sequential parsing and <code>or</code> for the alternatives.</p>
+<p>As all of the remaining rules refer to themselves or each other recursively,
+we define methods instead of constants to implement them,
+because for constants such cyclic references are not allowed in Java.
+The first rule for <code>expr</code> can be translated into a parser as follows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// &lt;expr&gt; ::= &lt;term&gt; &#34;+&#34; &lt;expr&gt; | &lt;term&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">expr</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>                                    <span style="color:#75715e">// &lt;expr&gt; ::=
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> opExpr <span style="color:#f92672">=</span>
+      term<span style="color:#f92672">().</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>fst <span style="color:#f92672">-&gt;</span>                                     <span style="color:#75715e">// &lt;term&gt;
+</span><span style="color:#75715e"></span>      Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;+&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> <span style="color:#75715e">// &#34;+&#34;
+</span><span style="color:#75715e"></span>      expr<span style="color:#f92672">().</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>snd <span style="color:#f92672">-&gt;</span>                                         <span style="color:#75715e">// &lt;expr&gt;
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">new</span> Bin<span style="color:#f92672">(</span>chr<span style="color:#f92672">,</span> fst<span style="color:#f92672">,</span> snd<span style="color:#f92672">))));</span>
+  <span style="color:#66d9ef">return</span> opExpr<span style="color:#f92672">.</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>term<span style="color:#f92672">());</span>                                     <span style="color:#75715e">// | &lt;term&gt;
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>Here, we define a parser <code>opExpr</code> for the seequential part of the rule
+and return an alternative parser as result.
+The sequential part is expressed with two calls to <code>flatMap</code>.
+Finally, <code>map</code> is used to adjust the result of the last parser in the sequence
+and combine the results of all parsers in a <code>Bin</code> instance.</p>
+<p>The rule for <code>term</code> can be translated similarly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// &lt;term&gt; ::= &lt;factor&gt; &#34;*&#34; &lt;term&gt; | &lt;factor&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">term</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>                                    <span style="color:#75715e">// &lt;term&gt; ::=
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> opTerm <span style="color:#f92672">=</span>
+      factor<span style="color:#f92672">().</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>fst <span style="color:#f92672">-&gt;</span>                                   <span style="color:#75715e">// &lt;factor&gt;
+</span><span style="color:#75715e"></span>      Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;*&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> <span style="color:#75715e">// &#34;*&#34;
+</span><span style="color:#75715e"></span>      term<span style="color:#f92672">().</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>snd <span style="color:#f92672">-&gt;</span>                                         <span style="color:#75715e">// &lt;term&gt;
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">new</span> Bin<span style="color:#f92672">(</span>chr<span style="color:#f92672">,</span> fst<span style="color:#f92672">,</span> snd<span style="color:#f92672">))));</span>
+  <span style="color:#66d9ef">return</span> opTerm<span style="color:#f92672">.</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>factor<span style="color:#f92672">());</span>                                   <span style="color:#75715e">// | &lt;factor&gt;
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>The definition of <code>term</code> has the same structure as the definition of <code>expr</code>,
+but the parsers filling in the holes of this structure are all different.
+Finally, we translate the rule for <code>factor</code> into a parser
+to complete our implementation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// &lt;factor&gt; ::= &#34;(&#34; &lt;expr&gt; &#34;)&#34; | &lt;const&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">factor</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>                                  <span style="color:#75715e">// &lt;factor&gt; ::=
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>Exp<span style="color:#f92672">&gt;</span> parenthezised <span style="color:#f92672">=</span>
+      Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;(&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>_lp <span style="color:#f92672">-&gt;</span> <span style="color:#75715e">// &#34;(&#34;
+</span><span style="color:#75715e"></span>      expr<span style="color:#f92672">().</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>exp <span style="color:#f92672">-&gt;</span>                                     <span style="color:#75715e">// &lt;expr&gt;
+</span><span style="color:#75715e"></span>      Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forChar</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>chr <span style="color:#f92672">-&gt;</span> chr <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;)&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>_rp <span style="color:#f92672">-&gt;</span>     <span style="color:#75715e">// &#34;)&#34;
+</span><span style="color:#75715e"></span>      exp<span style="color:#f92672">)));</span>
+  <span style="color:#66d9ef">return</span> parenthezised<span style="color:#f92672">.</span><span style="color:#a6e22e">or</span><span style="color:#f92672">(</span>CONST<span style="color:#f92672">);</span>                               <span style="color:#75715e">// | &lt;const&gt;
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>This parser has a slightly different structure than the previous ones
+because two of the results in the sequential parser
+(the left and right parentheses)
+are ignored in the produced result.</p>
+<h2 id="tasks">
+  Tasks
+  <a class="anchor" href="#tasks">#</a>
+</h2>
+<h3 id="generalized-operator-parsing">
+  Generalized operator parsing
+  <a class="anchor" href="#generalized-operator-parsing">#</a>
+</h3>
+<p>Refactor the parser definitions to generalize the parsing of operator symbols.</p>
+<ol>
+<li>
+<p>First, extend the <code>ExpParser</code> class by a method with the following signature.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> Parser<span style="color:#f92672">&lt;</span>Character<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">opCharIn</span><span style="color:#f92672">(</span>String chars<span style="color:#f92672">);</span>
+</code></pre></div><p>This method should return a parser for characters that are contained in the given string.
+Modify the <code>expr</code> and <code>term</code> parsers to use <code>opCharIn</code>.
+Check that the tests for the expression parser still pass.</p>
+</li>
+<li>
+<p>Change the calls to <code>opCharIn</code> to allow for more arithmetic operators,
+at least adding operator symbols for subtraction and division.
+Make sure to add new operator symbols in such a way that
+their usual precedence rules are respected.
+Add tests to verify that your extension is correct.</p>
+</li>
+<li>
+<p>Change the definition of <code>opCharIn</code> to allow an arbitrary number of
+whitespace characters before and after the operator symbol.
+Add tests to verify that expressions can be parsed with an arbitrary amount of
+whitespace before and after binary operator symbols.</p>
+</li>
+</ol>
+<h3 id="interactive-evaluation">
+  Interactive evaluation
+  <a class="anchor" href="#interactive-evaluation">#</a>
+</h3>
+<p>Implement an interactive evaluator of arithmetic expressions as command line program.
+Here is an example interaction:</p>
+<pre><code>Enter arithmetic expressions to evaluate them, press ^C to quit.
+eval&gt; 6*3 + 4
+((6 * 3) + 4) = 22
+eval&gt; 6 * (3+4)
+(6 * (3 + 4)) = 42
+eval&gt; 5 % 2
+parse error for: 5 % 2
+eval&gt; 1/0
+(1 / 0) = undefined
+eval&gt; 50 - 50/6
+(50 - (50 / 6)) = 42
+eval&gt; ^C
+</code></pre><p>Use the <code>lines</code> method provided by <code>BufferedReader</code>
+to process inputs in a stream pipeline.
+Implement error handling for parse errors and division by zero
+as shown in the example as well as for possible I/O exceptions.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/" target="_blank"
+  >&copy; 2020</a>
+by
+<a href="http://twitter.com/sebfisch" target="_blank">Sebastian Fischer</a>
+
+      </footer>
+
+      
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#tests-for-our-parser">Tests for our parser</a></li>
+    <li><a href="#parser-definitions">Parser definitions</a>
+      <ul>
+        <li><a href="#integer-parsers">Integer parsers</a></li>
+        <li><a href="#expression-parsers">Expression parsers</a></li>
+      </ul>
+    </li>
+    <li><a href="#tasks">Tasks</a>
+      <ul>
+        <li><a href="#generalized-operator-parsing">Generalized operator parsing</a></li>
+        <li><a href="#interactive-evaluation">Interactive evaluation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

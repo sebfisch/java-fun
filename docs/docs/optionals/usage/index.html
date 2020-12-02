@@ -148,6 +148,63 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/" class="">Parsers</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/tests/" class="">Combinators in Isolation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/definition/" class="">Defining Complex Parsers</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" class="">Implementing Combinators</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="http://sebfisch.github.io/java-fun/docs/links/" class="">External Links</a>
   
 
@@ -219,7 +276,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
       </ul>
     </li>
-    <li><a href="#task-refactoring-anti-patterns">Task: Refactoring Anti-Patterns</a></li>
+    <li><a href="#task-refactor-anti-patterns">Task: Refactor anti-patterns</a></li>
   </ul>
 </nav>
 
@@ -354,11 +411,7 @@ before applying the operator to compute the result.</p>
 <p>The shown evaluator will throw an arithmetic exception
 when division by zero occurs during the evaluation.
 Our next evaluator avoids runtime exceptions and returns <code>null</code> instead.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NullEvaluator</span> <span style="color:#66d9ef">implements</span> ExpTransform<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-  <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Num num<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> num<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
-  <span style="color:#f92672">}</span>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NullEvaluator</span> <span style="color:#66d9ef">extends</span> Evaluator <span style="color:#f92672">{</span>
   <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">fromExp</span><span style="color:#f92672">(</span>Bin bin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> Integer left <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getLeftArg</span><span style="color:#f92672">());</span>
     <span style="color:#66d9ef">final</span> Integer right <span style="color:#f92672">=</span> fromExp<span style="color:#f92672">(</span>bin<span style="color:#f92672">.</span><span style="color:#a6e22e">getRightArg</span><span style="color:#f92672">());</span>
@@ -374,7 +427,7 @@ Our next evaluator avoids runtime exceptions and returns <code>null</code> inste
     <span style="color:#f92672">}</span>
   <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><p>The method for <code>Num</code> instances is unchanged.
+</code></pre></div><p>The method for <code>Num</code> instances is inherited from the <code>Evaluator</code> class.
 The version for <code>Bin</code> uses <code>applyOp</code> to check for division by zero
 instead of applying the operator directly.
 As recursive calls might return <code>null</code>,
@@ -491,10 +544,27 @@ into another version that makes idiomatic use of optional combinators
 and avoids common anti-patterns.
 It is not only safer than the <code>NullEvaluator</code> based on explicit <code>null</code> checks
 but also shorter.</p>
-<h2 id="task-refactoring-anti-patterns">
-  Task: Refactoring Anti-Patterns
-  <a class="anchor" href="#task-refactoring-anti-patterns">#</a>
+<h2 id="task-refactor-anti-patterns">
+  Task: Refactor anti-patterns
+  <a class="anchor" href="#task-refactor-anti-patterns">#</a>
 </h2>
+<p>The file <code>ExplainCommands.java</code> implements an interactive command line application
+that can be used to print explanations for common Unix commands.</p>
+<ol>
+<li>
+<p>Study the implementation of this tool and read the documentation
+of used methods involving streams and/or optionals
+that your are unaware of.</p>
+</li>
+<li>
+<p>Refactor the <code>explain</code> method to avoid common anti-patterns
+when programming with optional values
+by using the combinators <code>map</code>, <code>filter</code>, and/or <code>flatMap</code>.</p>
+</li>
+</ol>
+<p>The method <code>loadExplanation</code> is an example for an API that might return &ldquo;no result&rdquo;.
+You can treat it as a black box
+and don&rsquo;t need to change it or study its implementation in detail.</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -551,7 +621,7 @@ by
         <li><a href="#map-specializes-flatmap"><code>map</code> specializes <code>flatMap</code></a></li>
       </ul>
     </li>
-    <li><a href="#task-refactoring-anti-patterns">Task: Refactoring Anti-Patterns</a></li>
+    <li><a href="#task-refactor-anti-patterns">Task: Refactor anti-patterns</a></li>
   </ul>
 </nav>
 

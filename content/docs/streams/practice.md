@@ -17,13 +17,10 @@ When searching for lines matching the regular expression `/public static[^=]*\(/
 in our own `src` folder, our application might produce output like this.
 
 ```
-/home/me/java-functional-patterns/src/main/java/sebfisch/SrcFileSearch.java
+/home/me/java-fun-code/src/main/java/sebfisch/ExplainCommands.java
+  public static void main(String[] args) {
+/home/me/java-fun-code/src/main/java/sebfisch/SrcFileSearch.java
   public static void main(final String[] args) {
-/home/me/java-functional-patterns/src/main/java/sebfisch/parser/Parser.java
-  public static <R> Parser<R> failure() {
-  public static <R> Parser<R> of(R result) {
-  public static Parser<Character> forChar() {
-  public static Parser<String> forStringOf(final Parser<Character> charParser) {
 ```
 
 File names are printed (using their absolute path)
@@ -33,7 +30,7 @@ To compute a stream of Java source file names in a given folder
 we define the following method.
 
 ```java
-static Stream<Path> walkJavaFiles(final Path root) throws IOException {
+static Stream<Path> walkJavaFiles(Path root) throws IOException {
   return Files.walk(root)
       .filter(Files::isReadable)
       .filter(path -> path.toString().endsWith(".java"));
@@ -175,7 +172,7 @@ defined above.
 That method can throw an `IOException` which we handle in our `main` method.
 
 ```java {lineos=table,hl_lines=[1,"9-11"]}
-try (final Stream<Path> javaFiles = walkJavaFiles(srcPath)) {
+try (Stream<Path> javaFiles = walkJavaFiles(srcPath)) {
   javaFiles
       .map(Path::toAbsolutePath)
       .filter(file -> readLines(file).anyMatch(containsMatch))
@@ -216,7 +213,7 @@ The method `readLines` is defined as follows.[^preliminary]
 [^preliminary]: We will define a different version of this method below.
 
 ```java
-private static Stream<String> readLines(final Path file) {
+private static Stream<String> readLines(Path file) {
   try {
     return Files.lines(file);
   } catch (IOException e) {
@@ -235,7 +232,7 @@ To make sure we actually handle the wrapped exception,
 we need to add a `catch` clause for `UncheckedIOException` in our `main` method.
 
 ```java {lineos=table,hl_lines=["11-13"]}
-try (final Stream<Path> javaFiles = walkJavaFiles(srcPath)) {
+try (Stream<Path> javaFiles = walkJavaFiles(srcPath)) {
   javaFiles
       .map(Path::toAbsolutePath)
       .filter(file -> readLines(file).anyMatch(containsMatch))
@@ -289,7 +286,7 @@ We can change the definition of `readLines` as follows to make sure
 files are always closed after consuming the returned stream.
 
 ```java {lineos=table,hl_lines=[3]}
-private static Stream<String> readLines(final Path file) {
+private static Stream<String> readLines(Path file) {
   try {
     return Stream.of(Files.lines(file)).flatMap(s -> s); // CHANGED
   } catch (IOException e) {

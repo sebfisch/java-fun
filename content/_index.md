@@ -6,7 +6,7 @@ title: "Functional Patterns in Java"
 
 > Conventional programming languages are growing *ever more enormous, but not stronger*.
 
-In his Turing-Award lecture in 1978,
+In his Turing-Award lecture in 1977,
 [John Backus](https://en.wikipedia.org/wiki/John_Backus)
 asked:
 [Can programming be liberated from the von Neumann style?](https://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf)
@@ -56,7 +56,7 @@ In this tutorial, we will look at combining forms, or *combinators*,
 that are particularly prevalent: `map`, `filter`, and `flatMap`.
 All of them are provided for different types by Java's standard library.
 We will discuss how to use them for [Streams](docs/streams/) and [Optionals](docs/optionals/) and then 
-implement our own types providing these combinators.
+implement our own type providing these combinators.
 
 The underlying source code is available online, 
 and this tutorial includes tasks to extend it.
@@ -69,9 +69,12 @@ with the
 [Remote Development Extension Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
 to use a predefined environment without creating (or adjusting) your own.
 To use the predefined environment in VS Code
+download and unpack the
+[source code](https://github.com/sebfisch/java-fun-code/archive/main.zip)
+(or clone the
+[repository](https://github.com/sebfisch/java-fun-code)
+using `git`),
+open the repository folder in VS Code,
 click on the Remote Containers icon in the bottom-left corner,
-select *Clone Repository in Container Volume*,
-and provide the URL of the accompanying source code repository.
-Alternatively, you can use `git` to clone the repository,
-open the corresponding folder in VS Code,
-and then select *Reopen Folder in Container*.
+and select *Reopen Folder in Container*.
+

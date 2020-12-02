@@ -158,12 +158,8 @@ The shown evaluator will throw an arithmetic exception
 when division by zero occurs during the evaluation.
 Our next evaluator avoids runtime exceptions and returns `null` instead.
 
-```java { lineos=table, hl_lines=[9] }
-public class NullEvaluator implements ExpTransform<Integer> {
-  public Integer fromExp(Num num) {
-    return num.getValue();
-  }
-
+```java { lineos=table, hl_lines=[5] }
+public class NullEvaluator extends Evaluator {
   public Integer fromExp(Bin bin) {
     final Integer left = fromExp(bin.getLeftArg());
     final Integer right = fromExp(bin.getRightArg());
@@ -181,7 +177,7 @@ public class NullEvaluator implements ExpTransform<Integer> {
 }
 ```
 
-The method for `Num` instances is unchanged.
+The method for `Num` instances is inherited from the `Evaluator` class.
 The version for `Bin` uses `applyOp` to check for division by zero
 instead of applying the operator directly.
 As recursive calls might return `null`,
@@ -312,4 +308,20 @@ and avoids common anti-patterns.
 It is not only safer than the `NullEvaluator` based on explicit `null` checks
 but also shorter.
 
-## Task: Refactoring Anti-Patterns
+## Task: Refactor anti-patterns
+
+The file `ExplainCommands.java` implements an interactive command line application
+that can be used to print explanations for common Unix commands.
+
+ 1. Study the implementation of this tool and read the documentation
+    of used methods involving streams and/or optionals
+    that your are unaware of.
+
+ 2. Refactor the `explain` method to avoid common anti-patterns
+    when programming with optional values
+    by using the combinators `map`, `filter`, and/or `flatMap`.
+
+The method `loadExplanation` is an example for an API that might return "no result".
+You can treat it as a black box 
+and don't need to change it or study its implementation in detail.
+

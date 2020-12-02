@@ -30,7 +30,7 @@ sequencing and conditional statements
 can be expressed using expressions involving functional interfaces with optionals.
 Presenting this combinatorial style of programming
 by means of the relatively simple type of optionals
-will serve as a bridge to combinatorial parsing
+will serve as a bridge to [combinatorial parsing](../parsers/)
 and can help consolidate and expand intuitions assiciated with `map`, `filter` and `flatMap`
 that are independent of concrete types implementing these combinators.
 

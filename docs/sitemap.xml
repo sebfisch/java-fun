@@ -33,6 +33,22 @@
   </url>
   
   <url>
+    <loc>http://sebfisch.github.io/java-fun/docs/parsers/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sebfisch.github.io/java-fun/docs/parsers/tests/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sebfisch.github.io/java-fun/docs/parsers/definition/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sebfisch.github.io/java-fun/docs/parsers/implementation/</loc>
+  </url>
+  
+  <url>
     <loc>http://sebfisch.github.io/java-fun/docs/links/</loc>
     <lastmod>2020-11-18T13:44:49+01:00</lastmod>
   </url>
