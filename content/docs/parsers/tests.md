@@ -69,7 +69,7 @@ Like in the previous test the input matches what the parser expects.
 Parsers can fail if there is insufficient input or
 if there is additional unrecognized input.
 The following test asserts that 
-a parsers for letters cannot parse digits.
+a parser for letters cannot parse digits.
 
 ```java
 @Test
@@ -84,7 +84,7 @@ void testThatParserForLettersFailsOnDigits() {
 The static method `Parser.failure` creates a parser
 that does not consume any input
 and also does not produces a result.
-The following tests assert that the created pasers fail
+The following tests assert that the created parsers fail
 regardless of the given input.
 
 ```java

@@ -9,7 +9,7 @@
 <meta property="og:description" content="Implementing Combinators #  Until now we have seen three examples of types implementing map, filter, and flatMap combinators that can be used to define complex programs based on simpler ones. We have also seen useful properties of these combinators that can be used to reason about the meaning of programs. Some of these properties were valid regardless of the concrete type they are implemented for. As such, they help form intuitions about the meaning of those combinators that is independent of concrete types." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/parsers/implementation/" />
-
+<meta property="article:modified_time" content="2020-12-02T13:02:37+01:00" />
 <title>Implementing Combinators | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -366,7 +366,7 @@ which returns a parser that produces no results.</p>
 </code></pre></div><p>The lambda expression used in the <code>return</code> statement
 matches the method <code>intermediateResults</code>
 which is the only (non-default) method of the functional interface <code>Parser</code>.
-It is transflated by the Java compiler into the following instance of an anonymous class.</p>
+It is translated by the Java compiler into the following instance of an anonymous class.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">new</span> Parser<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
   <span style="color:#a6e22e">@Override</span>
   Stream<span style="color:#f92672">&lt;</span>Result<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">intermediateResults</span><span style="color:#f92672">(</span>String input<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>

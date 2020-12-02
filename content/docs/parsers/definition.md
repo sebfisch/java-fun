@@ -114,7 +114,7 @@ following the minus sign.
 ### Expression parsers
 
 We are now ready to translate the railroad diagram into parsers.
-Each rule will be translated into a parser that produces and `Exp` instance.
+Each rule will be translated into a parser that produces an `Exp` instance.
 The simplest case is the rule for `const` which we can express
 by adjusting the result of the `INTEGER` parser as follows.
 

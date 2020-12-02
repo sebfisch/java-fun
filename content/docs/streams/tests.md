@@ -111,7 +111,7 @@ not necessarily one at a time, and possibly in parallel.
 The `flatMap` combinator has the following signature.
 
 ```java
-<R> Stream<R> flatMap(Function<T,Stream<R>> function);
+<R> Stream<R> flatMap(Function<T, Stream<R>> function);
 ```
 
 It expects a function as argument where the argument type needs to match
@@ -132,7 +132,7 @@ void testThatFlatMapCombinesStreamResults() {
 ```
 
 The lambda expression used as argument of `flatMap` is equivalent to
-an instance of an anonymous class implementing `Function<String,Stream<Integer>>`.
+an instance of an anonymous class implementing `Function<String, Stream<Integer>>`.
 The method `chars` on strings returns an `IntStream`
 which is a stream where the elements are primitive `int` values
 (one for each character of the string.)

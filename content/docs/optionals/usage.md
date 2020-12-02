@@ -77,7 +77,7 @@ public class Bin implements Exp {
   private final Exp leftArg;
   private final Exp rightArg;
 
-  public Bin(final char op, final Exp leftArg, final Exp rightArg) {
+  public Bin(char op, Exp leftArg, Exp rightArg) {
     this.op = new BinOp(op);
     this.leftArg = Objects.requireNonNull(leftArg);
     this.rightArg = Objects.requireNonNull(rightArg);
@@ -100,7 +100,7 @@ The operator is represented by the class `BinOp`.
 public class BinOp {
   private final char chr;
 
-  public BinOp(final char chr) {
+  public BinOp(char chr) {
     this.chr = chr;
   }
 
@@ -108,7 +108,7 @@ public class BinOp {
     return chr;
   }
 
-  public int apply(final int left, final int right) {
+  public int apply(int left, int right) {
     // implementation omitted
   }
 }

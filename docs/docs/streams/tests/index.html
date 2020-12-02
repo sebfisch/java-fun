@@ -365,7 +365,7 @@ not necessarily one at a time, and possibly in parallel.</p>
   <a class="anchor" href="#the-flatmap-combinator">#</a>
 </h2>
 <p>The <code>flatMap</code> combinator has the following signature.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span> Stream<span style="color:#f92672">&lt;</span>R<span style="color:#f92672">&gt;&gt;</span> function<span style="color:#f92672">);</span>
 </code></pre></div><p>It expects a function as argument where the argument type needs to match
 the element type of the original stream.
 The result of the function passed as argument to <code>flatMap</code> needs to be a stream itself,
@@ -380,7 +380,7 @@ returned by the given function.</p>
   assertEquals<span style="color:#f92672">(</span>12<span style="color:#f92672">,</span> result<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">());</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><p>The lambda expression used as argument of <code>flatMap</code> is equivalent to
-an instance of an anonymous class implementing <code>Function&lt;String,Stream&lt;Integer&gt;&gt;</code>.
+an instance of an anonymous class implementing <code>Function&lt;String, Stream&lt;Integer&gt;&gt;</code>.
 The method <code>chars</code> on strings returns an <code>IntStream</code>
 which is a stream where the elements are primitive <code>int</code> values
 (one for each character of the string.)

@@ -5,7 +5,7 @@ weight: 14
 
 # Streams in Practice
 
-We now discuss a small command line application
+We now discuss a command line application
 demonstrating how streams help solving problems in practice.
 
 ## Implementing source file search

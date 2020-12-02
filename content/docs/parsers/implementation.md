@@ -102,7 +102,7 @@ static <R> Parser<R> failure() {
 The lambda expression used in the `return` statement
 matches the method `intermediateResults`
 which is the only (non-default) method of the functional interface `Parser`.
-It is transflated by the Java compiler into the following instance of an anonymous class.
+It is translated by the Java compiler into the following instance of an anonymous class.
 
 ```java
 new Parser<R>() {

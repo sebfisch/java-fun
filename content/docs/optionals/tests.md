@@ -84,7 +84,7 @@ Only matching elements are kept in the result.
 The `flatMap` combinator has the following signature, resembling `flatMap` for streams.
 
 ```java
-<R> Optional<R> flatMap(Function<T,Optional<R>> function);
+<R> Optional<R> flatMap(Function<T, Optional<R>> function);
 ```
 
 The following tests assert that `flatMap` applies the given function to the wrapped element

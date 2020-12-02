@@ -11,7 +11,7 @@ Basic parsers #  Basic parsers differ in how much input they consume as well as 
 Basic parsers #  Basic parsers differ in how much input they consume as well as what result they produce." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/parsers/tests/" />
-
+<meta property="article:modified_time" content="2020-12-02T13:02:37+01:00" />
 <title>Combinators in Isolation | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -363,7 +363,7 @@ The following test asserts that the resulting parser produces the consumed strin
 <p>Parsers can fail if there is insufficient input or
 if there is additional unrecognized input.
 The following test asserts that
-a parsers for letters cannot parse digits.</p>
+a parser for letters cannot parse digits.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
 <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatParserForLettersFailsOnDigits</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
   <span style="color:#66d9ef">final</span> Parser<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> parser <span style="color:#f92672">=</span> Parser<span style="color:#f92672">.</span><span style="color:#a6e22e">forString</span><span style="color:#f92672">(</span>Character<span style="color:#f92672">::</span>isLetter<span style="color:#f92672">);</span>
@@ -374,7 +374,7 @@ a parsers for letters cannot parse digits.</p>
 </code></pre></div><p>The static method <code>Parser.failure</code> creates a parser
 that does not consume any input
 and also does not produces a result.
-The following tests assert that the created pasers fail
+The following tests assert that the created parsers fail
 regardless of the given input.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Test</span>
 <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testThatFailingParserFailsForEmptyInput</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>

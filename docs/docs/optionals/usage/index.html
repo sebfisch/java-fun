@@ -11,7 +11,7 @@ Arithmetic expressions #  Arithmetic expressions come in different variants. We 
 Arithmetic expressions #  Arithmetic expressions come in different variants. We restrict ourselves to representing constants and applications of binary operators for basic arithmetic operations. The different kinds of expressions are represented as different classes Num and Bin implementing the interface Exp." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://sebfisch.github.io/java-fun/docs/optionals/usage/" />
-<meta property="article:modified_time" content="2020-11-20T09:53:46+01:00" />
+<meta property="article:modified_time" content="2020-12-02T13:02:37+01:00" />
 <title>Using Optionals | Java Fun</title>
 <link rel="manifest" href="/java-fun/manifest.json">
 <link rel="icon" href="/java-fun/favicon.png" type="image/x-icon">
@@ -350,7 +350,7 @@ representing applications of binary operators.</p>
   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Exp leftArg<span style="color:#f92672">;</span>
   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Exp rightArg<span style="color:#f92672">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bin</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> op<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> Exp leftArg<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> Exp rightArg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Bin</span><span style="color:#f92672">(</span><span style="color:#66d9ef">char</span> op<span style="color:#f92672">,</span> Exp leftArg<span style="color:#f92672">,</span> Exp rightArg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">op</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BinOp<span style="color:#f92672">(</span>op<span style="color:#f92672">);</span>
     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">leftArg</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>leftArg<span style="color:#f92672">);</span>
     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rightArg</span> <span style="color:#f92672">=</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>rightArg<span style="color:#f92672">);</span>
@@ -369,7 +369,7 @@ The operator is represented by the class <code>BinOp</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BinOp</span> <span style="color:#f92672">{</span>
   <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> chr<span style="color:#f92672">;</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">BinOp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">char</span> chr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">BinOp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">char</span> chr<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">chr</span> <span style="color:#f92672">=</span> chr<span style="color:#f92672">;</span>
   <span style="color:#f92672">}</span>
 
@@ -377,7 +377,7 @@ The operator is represented by the class <code>BinOp</code>.</p>
     <span style="color:#66d9ef">return</span> chr<span style="color:#f92672">;</span>
   <span style="color:#f92672">}</span>
 
-  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> left<span style="color:#f92672">,</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> left<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> right<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// implementation omitted
 </span><span style="color:#75715e"></span>  <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
