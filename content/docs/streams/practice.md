@@ -20,7 +20,7 @@ in our own `src` folder, our application might produce output like this.
 /home/me/java-fun-code/src/main/java/sebfisch/ExplainCommands.java
   public static void main(String[] args) {
 /home/me/java-fun-code/src/main/java/sebfisch/SrcFileSearch.java
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
 ```
 
 File names are printed (using their absolute path)
