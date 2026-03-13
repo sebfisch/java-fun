@@ -11,7 +11,7 @@ Parsers are instances of the
 Like streams and optionals,
 parsers also provide implementations for the combinators
 `map`, `filter` and `flatMap`.
-Before we observe how to combine parsers, hoewever,
+Before we observe how to combine parsers, however,
 we first look at how to create basic parsers.
 
 ## Basic parsers
